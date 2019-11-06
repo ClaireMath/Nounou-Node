@@ -1,0 +1,328 @@
+*,
+*::after,
+*::before {
+  margin: 0;
+  padding: 0;
+  box-sizing:  border-box;
+  outline: none;
+}
+body {
+    display:  flex;
+    flex-direction:  column;
+    /* justify-content:  ; */
+    align-items: center;
+}
+header {
+    position: fixed;
+    display:  flex;
+    flex-direction:  column;
+    justify-content:  space-around;
+    align-items: center;
+    height: 160px;
+    width: 100%;
+    font-size: 1.2em;
+    background-color: whitesmoke;
+    color: #680d3b; 
+    font-family:  cursive, "sans-serif";
+    font-weight: bold;
+    font-size: 20px;
+}
+.banner {
+    display:  flex;
+    flex-direction:  row;
+    justify-content:  space-between;
+    align-items: center;
+    width: 100%;
+    height: 100px;  
+}
+#menuB {
+    position: absolute;
+    width: 70px;
+    height: 70px;
+    margin-left: -10px;
+    margin-top: 15px;
+    cursor: pointer;
+    opacity: 10;
+}
+.divSpans {
+    display:  flex;
+    flex-direction:  column;
+    justify-content:  center;
+    align-items: flex-start;
+    width: 70px;
+    height: 70px;
+    margin-left: 20px;
+    margin-bottom: 17px;
+}
+header>div>div>span {
+    width: 30px;
+    height: 3px;
+    background-color: #680d3b;
+    border-radius: 10px;
+}
+header>div>div>.span1 {
+    margin-top: 20px;
+}
+header>div>div>.span2 {
+    margin-top: 8px;
+}
+header>div>div>.span3 {
+    margin-top: 8px;
+}
+#menuB:checked ~ .span1  {
+        background-color: red;
+        animation: animationSpan1 ease-in-out 0.5s;
+        animation-iteration-count: 1;
+        transform-origin: 50% 50%;
+        -webkit-animation: animationSpan1 ease-in-out 0.5s;
+        -webkit-animation-iteration-count: 1;
+        -webkit-transform-origin: 50% 50%;
+        -moz-animation: animationSpan1 ease-in-out 0.5s;
+        -moz-animation-iteration-count: 1;
+        -moz-transform-origin: 50% 50%;
+        -o-animation: animationSpan1 ease-in-out 0.5s;
+        -o-animation-iteration-count: 1;
+        -o-transform-origin: 50% 50%;
+        -ms-animation: animationSpan1 ease-in-out 0.5s;
+        -ms-animation-iteration-count: 1;
+        -ms-transform-origin: 50% 50%;
+        -webkit-animation: animationSpan1 ease-in-out 0.5s;
+        animation-fill-mode:forwards;
+        -webkit-animation-fill-mode:forwards;
+        -moz-animation-fill-mode:forwards;
+        -o-animation-fill-mode:forwards;
+        -ms-animation-fill-mode:forwards;
+}
+      
+      @keyframes animationSpan1{
+          0% {
+          transform:  rotate(0deg) ;
+        }
+        100% {
+          transform:  rotate(405deg) ;
+          -webkit-transform:  rotate(405deg) ;
+          -moz-transform:  rotate(405deg) ;
+          -ms-transform:  rotate(405deg) ;
+          -o-transform:  rotate(405deg) ;
+}
+      }
+      
+      @-moz-keyframes animationSpan1{
+        0% {
+          -moz-transform:  rotate(0deg) ;
+        }
+        100% {
+          -moz-transform:  rotate(405deg) ;
+        }
+      }
+      
+      @-webkit-keyframes animationSpan1 {
+        0% {
+          -webkit-transform:  rotate(0deg) ;
+        }
+        100% {
+          -webkit-transform:  rotate(405deg) ;
+        }
+      }
+      
+      @-o-keyframes animationSpan1 {
+        0% {
+          -o-transform:  rotate(0deg) ;
+        }
+        100% {
+          -o-transform:  rotate(405deg) ;
+        }
+      }
+      
+      @-ms-keyframes animationSpan1 {
+        0% {
+          -ms-transform:  rotate(0deg) ;
+        }
+        100% {
+          -ms-transform:  rotate(405deg) ;
+        }
+      }
+#menuB:checked ~ .span2  {
+    display: none;
+}
+#menuB:checked ~ .span3{
+    background-color: red;
+    animation: animationSpan3 ease-in-out 0.5s;
+    animation-iteration-count: 1;
+    transform-origin: 50% 50%;
+    animation-fill-mode:forwards; /*when the spec is finished*/
+    -webkit-animation: animationSpan3 ease-in-out 0.5s;
+    -webkit-animation-iteration-count: 1;
+    -webkit-transform-origin: 50% 50%;
+    -webkit-animation-fill-mode:forwards; /*Chrome 16+, Safari 4+*/ 
+    -moz-animation: animationSpan3 ease-in-out 0.5s;
+    -moz-animation-iteration-count: 1;
+    -moz-transform-origin: 50% 50%;
+    -moz-animation-fill-mode:forwards; /*FF 5+*/
+    -o-animation: animationSpan3 ease-in-out 0.5s;
+    -o-animation-iteration-count: 1;
+    -o-transform-origin: 50% 50%;
+    -o-animation-fill-mode:forwards; /*Not implemented yet*/
+    -ms-animation: animationSpan3 ease-in-out 0.5s;
+    -ms-animation-iteration-count: 1;
+    -ms-transform-origin: 50% 50%;
+    -ms-animation-fill-mode:forwards; /*IE 10+*/
+  }
+  
+  @keyframes animationSpan3{
+    0% {
+      transform:  translate(0px,0px)  rotate(0deg) ;
+    }
+    100% {
+      transform:  translate(0px,-11px)  rotate(-405deg) ;
+    }
+  }
+  
+  @-moz-keyframes animationSpan3{
+    0% {
+      -moz-transform:  translate(0px,0px)  rotate(0deg) ;
+    }
+    100% {
+      -moz-transform:  translate(0px,-11px)  rotate(-405deg) ;
+    }
+  }
+  
+  @-webkit-keyframes animationSpan3 {
+    0% {
+      -webkit-transform:  translate(0px,0px)  rotate(0deg) ;
+    }
+    100% {
+      -webkit-transform:  translate(0px,-11px)  rotate(-405deg) ;
+    }
+  }
+  
+  @-o-keyframes animationSpan3 {
+    0% {
+      -o-transform:  translate(0px,0px)  rotate(0deg) ;
+    }
+    100% {
+      -o-transform:  translate(0px,-11px)  rotate(-405deg) ;
+    }
+  }
+  
+  @-ms-keyframes animationSpan3 {
+    0% {
+      -ms-transform:  translate(0px,0px)  rotate(0deg) ;
+    }
+    100% {
+      -ms-transform:  translate(0px,-11px)  rotate(-405deg) ;
+    }
+  }
+.divLogoAndTitle {
+    display:  flex;
+    flex-direction:  row;
+    justify-content:  space-around;
+    align-items: center;
+    width: 380px;
+    height: 100px;
+    text-align: center;
+}
+header>div>div.divLogoAndTitle>h1 {
+    font-size: 22px;
+    width: 190px;
+    font-family: 'Merienda One', cursive;
+}
+header>div>div.divLogoAndTitle>img.logo {
+    border-radius: 20px;
+    width: 105px;
+    height: 100px;
+    -webkit-border-radius:20px;
+    -moz-border-radius:20px;
+    -ms-border-radius:20px;
+    -o-border-radius:20px;
+    margin: 20px;
+}
+.divButtons {
+    display:  flex;
+    flex-direction:  column;
+    justify-content:  center;
+    align-items: center;
+    width: 150px;
+    height: 100px;
+    margin-right: 15px;
+}
+.btn {
+    width: 150px;
+    height: 30px;
+    font-family: 'Livvic', sans-serif;
+    border-radius: 10px;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    -ms-border-radius: 10px;
+    -o-border-radius: 10px;
+    color: hsl(330, 78%, 23%);
+    background-color: whitesmoke;
+    /* font-family: cursive, "sans-serif"; */
+    font-weight: bold;
+    font-size: 0.9em;
+    letter-spacing: 1px;
+}
+.btn1 {
+    margin-bottom: 4px;
+}
+.btn2 {
+    margin-top: 4px;
+}
+.recherche {
+    display:  flex;
+    flex-direction:  row;
+    justify-content:  space-around;
+    align-items: center;
+    width: 100%;
+    height: 60px;
+    z-index: 3;
+    /* background-color: #00b300; */
+    color: whitesmoke;
+}
+.recherche>div {
+    height: 60px;
+    width: 50%;
+    border-radius:10px;
+    display:  flex;
+    flex-direction:  row;
+    justify-content:  space-evenly;
+    align-items: center;
+    -webkit-border-radius:10px;
+    -moz-border-radius:10px;
+    -ms-border-radius:10px;
+    -o-border-radius:10px;
+}
+.recherche>div:nth-child(1) {
+    background-color: #00b300;
+}
+.recherche>div:nth-child(1):hover {
+  background-color:  #00e600;
+}
+.recherche>div:nth-child(2) {
+    background-color: #680d3b;
+}
+.recherche>div:nth-child(2):hover {
+  /* background-color:  #9f1459; */
+    background-color: #b61666;
+}
+.recherche>div>p {
+    text-align:  center;
+}
+main {
+    top: 600px;
+    width: 100%;
+    height: 3600px;
+    background-color:whitesmoke;
+}
+main>div {
+    width: 100%;
+    height: 750px;
+    background-color: whitesmoke;
+}
+p {
+    font-family: 'Livvic', sans-serif;
+}
+.paragraphe {
+  font-family: 'Livvic', sans-serif;
+  margin-left: 20px;
+}

@@ -1,0 +1,1 @@
+Nous voulons créer un site permettant de faire garder son chat (ses animaux), de façon quasi gratuite, grâce à une communauté d'amoureux des chats.

@@ -1,0 +1,33 @@
+{
+  "name": "mon-projet",
+  "version": "1.0.0",
+  "description": "Nous voulons créer un site permettant de faire garder son chat (ses animaux), de façon quasi gratuite, grâce à une communauté d'amoureux des chats.",
+  "main": "./SRC/server.js",
+  "scripts": {
+    "start": "nodemon server.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack.config.js"
+  },
+  "author": "Claire",
+  "license": "ISC",
+  "dependencies": {
+    "babel": "^6.23.0",
+    "bcrypt": "^3.0.6",
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "jsonwebtoken": "^8.5.1",
+    "mysql": "^2.17.1",
+    "mysql2": "^1.7.0",
+    "nodemon": "^1.19.3",
+    "require": "^2.4.20",
+    "sequelize": "^5.19.2",
+    "sql": "^0.78.0",
+    "utf8": "^3.0.0",
+    "webpack-node-externals": "^1.7.2"
+  },
+  "devDependencies": {
+    "webpack": "^4.41.0",
+    "webpack-cli": "^3.3.9"
+  }
+}

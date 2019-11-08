@@ -88,8 +88,15 @@ chat.post("/newCat", (req, res) => {
                         res.send('error 2' + err)
                     })
             } else {
-                res.json({
-                    error: "chat already exists"
+                chat.update(chatdata)
+                .then(chat => {
+                res.json(chat)
+                  alert("votre chat a été mis à jour")  
+                })
+                .catch(err => {
+                    res.json({
+                        error: "error" + err
+                    })
                 })
             }
         })
@@ -111,6 +118,7 @@ chat.put("/update", (req, res) => {
            if(chat){
               chat.update({
                 // prenom_chat: req.body.prenom_chat,
+                photo: req.body.photo,
                 sterilise: req.body.sterilise,
                 tolere_les_chats: req.body.tolere_les_chats,
                 tolere_les_animaux: req.body.tolere_les_animaux,
@@ -145,6 +153,7 @@ chat.put("/updatePrenom", (req, res) => {
            if(chat){
               chat.update({
                 prenom_chat: req.body.prenom_chat,
+                photo: req.body.photo,
                 sterilise: req.body.sterilise,
                 tolere_les_chats: req.body.tolere_les_chats,
                 tolere_les_animaux: req.body.tolere_les_animaux,
@@ -167,6 +176,23 @@ chat.put("/updatePrenom", (req, res) => {
         })
 });
 
+// get one cat via its idCat
+chat.get("/getOneById/:id_chat", (req,res) =>{
+    db.chat.findOne({
+        where: {idChat: req.params.id_chat},
+        
+        attributes:{
+            exclude:["created_at", "updated_at"]
+        }
+    })
+    .then(chats =>{
+        res.json(chats)
+    })
+        .catch(err =>{
+            // send back the error message 
+            res.json("erreur" + err);
+        })
+});
 
 // get one cat from a specific owner
 chat.get("/getOneByMaitre", (req,res) =>{

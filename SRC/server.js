@@ -23,10 +23,9 @@ const chat = require("../router/chat");
 const logement = require("../router/logement");
 const nounou = require("../router/nounou");
 const avis = require("../router/avis");
-// const sejour = require("../router/sejour_du_chat");
+
 
 // si on ne les crée pas dans les modeles, on ne les met pas ici.
-// const vivre = require("../router/vivre");
 // const garder = require("../router/garder");
 
 

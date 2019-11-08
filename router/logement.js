@@ -63,8 +63,14 @@ logement.post("/create", (req, res) => {
                         res.send('error ' + err)
                     })
             } else {
-                res.json({
-                    error: "flat already exists"
+                flat.update(logementdata)
+                .then(flat => {
+                res.json({flat: flat})
+                })
+                .catch(err => {
+                    res.json({
+                        error: "error" + err
+                    })   
                 })
             }
         })
@@ -78,9 +84,9 @@ logement.post("/create", (req, res) => {
 
 
 // update 
-logement.put("/update", (req, res) => {
+logement.put("/update/:idNounou", (req, res) => {
     db.logement.findOne({
-        where: { idNounou:req.body.id_nounou }
+        where: { idNounou:req.params.id_nounou }
     })
         .then(flat => {
            if(flat){
@@ -111,18 +117,16 @@ logement.put("/update", (req, res) => {
         })
 });
 
-
-logement.get("/getAll", (req,res) =>{
-    db.logement.findAll({
-        where: { 
-            prenom_chat:req.body.prenom_chat
-        },
+   // get one by idNounou
+logement.get("/getOneByIdNounou/:idNounou", (req,res) =>{
+    db.logement.findOne({
+        where: { idNounou:req.params.idNounou },
         attributes:{
             exclude:["created_at", "updated_at"]
         }
     })
-    .then(chats =>{
-        res.json(chats)
+    .then(flat =>{
+        res.json(flat)
     })
         .catch(err =>{
             // send back the error message 
@@ -130,7 +134,6 @@ logement.get("/getAll", (req,res) =>{
         })
 });
 
-   
 
 module.exports = logement;
 

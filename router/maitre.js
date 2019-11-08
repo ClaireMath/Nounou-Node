@@ -35,7 +35,7 @@ const Op = Sequelize.Op;
 /************************************** Start route module ****************************************************
  *****************************************************************************************************************/
 
- //
+ // le process va générer une clef secrète et on le renome secret
  process.env.SECRET_KEY = "secret";
 
  // add new maitre
@@ -328,7 +328,8 @@ maitre.delete("/deleteById/:id", (req,res) =>{
         // if maitre exists :
         if(maitre) {
             // delete maitre
-            maitre.destroy().then(() => {
+            maitre.destroy()
+            .then(() => {
                 // send back the confirmation that maitre is deleted
                 res.json("maitre supprimé via l'id")
             })

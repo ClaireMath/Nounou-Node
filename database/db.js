@@ -1,4 +1,4 @@
-// Sequelize est un ORM ((object-relational mapping ou ORM) est un type de
+// Sequelize est un ORM ((object-relational mapping ou ORM) c'est un type de
 // programme informatique qui se place en interface entre un programme 
 // applicatif et une bdd relationnelle pour simuler une bdd orientée objet.) permet d'interagir avec la base de données.
  const Sequelize = require('sequelize');
@@ -11,7 +11,7 @@ const db ={};
 // conn to database
 /**
  * new Sequelize({database},{username},{password},options{
- *     host:{hostname}, => maintenant local host, mais quand vrai site, le nom de domaine ou l'adresse IP.
+ *     host:{hostname}, => maintenant local host, mais quand le site sera en ligne, le nom de domaine ou l'adresse IP.
  *     dialect:  one of 'mysql' | 'mariadb' | 'postgres' | 'mssql' , The dialect of the database you are connecting to. One of mysql, postgres, sqlite and mssql.
  *     port: if you haven't changed your mysql default port, then it is 3306, or if you change it make sure to use your port,
  *     pool: { sequelize connection pool configuration
@@ -70,7 +70,7 @@ db.avis = require('../models/avis')(dbinfo,Sequelize);
 // db.garder = require('../models/garder')(dbinfo,Sequelize);
 
 
-// db.vivre = require('../models/vivre')(dbinfo,Sequelize);
+
 
 /**
  * There are four type of associations available in Sequelize

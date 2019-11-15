@@ -72,6 +72,7 @@ const Op = Sequelize.Op;
             // else  : if maitre already in your list
     // send back response in json error : maitre already in your list
     res.json({error: "maitre already in your list"})
+    alert('Votre compte existe déjà.')
                 }
             })
     // if error catch then and send back to site or postman
@@ -96,6 +97,7 @@ maitre.post("/login", (req, res) => {
             // si le mot de passe crypté correspond à celui récup par la requête
             // dans ce cas là tu me signes un token
             if (bcrypt.compareSync(req.body.mdp, user.mdp)) {
+                // dataValues (récupère les données de l'utilisateur recherché sur le findOne)
                 let token = jwt.sign(user.dataValues, process.env.SECRET_KEY, {
                     expiresIn: 1440
                 });
@@ -103,6 +105,7 @@ maitre.post("/login", (req, res) => {
                 // si les deux mdp ne correspondent pas, tu envoies une erreur
             } else {
                 res.send("Connexion refusée, erreur dans l'email ou dans le mot de passe")
+                alert("Connexion refusée, erreur dans l'email ou dans le mot de passe")
             }
         })
         // si tu n'as pas réussi à trouver le maitre, tu me renvoies l'erreur
@@ -386,7 +389,7 @@ maitre.get("/displayByEmail/:email", (req,res) =>{
     // find the maitre by email
     db.maitre.findAll({
         attributes:{
-        exclude:["mdp","created_at", "updated_at","telephone","token"]
+        exclude:["mdp","created_at", "updated_at","telephone","admin", "banni"]
     },
         where:{email: req.params.email},
         include: [{
@@ -415,7 +418,7 @@ maitre.get("/displayByName/:nom", (req,res) =>{
     // find the maitre by name
        db.maitre.findAll({
         attributes:{
-            exclude:["mdp","created_at", "updated_at","telephone","token"]
+            exclude:["mdp","created_at", "updated_at","telephone","admin", "banni"]
         }, 
         where:{nom: req.params.nom},
         include: [{
@@ -444,10 +447,11 @@ maitre.get("/displayByName/:nom", (req,res) =>{
 
 // get all Maitres
 maitre.get("/displayAll", (req,res) =>{
-    // find the maitre by email
     db.maitre.findAll({
         attributes:{
-            exclude:["mdp","created_at", "updated_at","telephone", "token"]
+            // exclude:["mdp","created_at", "updated_at","telephone", "admin", "banni"]
+            exclude:[]
+
         },
         include: [{
             model: db.chat,
@@ -470,7 +474,7 @@ maitre.get("/All/:ville", (req,res) =>{
     // find the maitre by email
     db.maitre.findAll({
         attributes:{
-            exclude:["password","created_at", "updated_at","telephone","token"]
+            exclude:["password","created_at", "updated_at","telephone","admin", "banni"]
         },
         where:{ville: req.params.ville},
         include: [{
@@ -495,7 +499,7 @@ maitre.get("/displayByCp/:code_postal", (req,res) =>{
     db.maitre.findAll({
             where:{code_postal: req.params.code_postal},
             attributes:{
-            exclude:["mdp","created_at", "updated_at","telephone", "token"],
+            exclude:["mdp","created_at", "updated_at","telephone", "admin", "banni"],
         },
         include: [{
             model: db.chat,
@@ -519,7 +523,7 @@ maitre.get("/AllByStatut", (req,res) =>{
     db.maitre.findAll({
             where:{statut_disponible: req.body.statut_disponible},
             attributes:{
-            exclude:["mdp","created_at", "updated_at","telephone", "token"]
+            exclude:["mdp","created_at", "updated_at","telephone", "admin", "banni"]
         },
         include: [{
             model: db.chat,
@@ -555,7 +559,7 @@ maitre.post("/AllByVilleEtStatut", (req,res) =>{
         req.body.a_peur_des_enfants = 0
     }
     db.maitre.findAll({
-            attributes: {exclude:["mdp","created_at", "updated_at", "telephone", "token"]},
+            attributes: {exclude:["mdp","created_at", "updated_at", "telephone", "admin", "banni"]},
             where: {
             [Op.and]: [{ville:req.body.ville}, {statut_disponible:req.body.statut_disponible}]
                },
@@ -585,7 +589,7 @@ maitre.post("/AllByVilleEtStatut", (req,res) =>{
 // afficher toutes les maitres DISPONIBLES par code postal
 maitre.get('/AllByCPEtStatut', (req, res) => {
     db.maitre.findAll({
-        attributes: {exclude: ['mdp', 'created at', 'updated_at', "telephone", "token"]},
+        attributes: {exclude: ['mdp', 'created at', 'updated_at', "telephone", "admin", "banni"]},
         where: {
             [Op.and]: [{code_postal: req.body.cp}, {statut_disponible:req.body.statut}]
         },

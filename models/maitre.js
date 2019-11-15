@@ -71,11 +71,18 @@ module.exports = (dbinfo, Sequelize) => {
                 // setting allowNull to false will add NOT NULL to the column, which means an error will be if you add info in this column
                 allowNull: true
             },
-            token: {
+            admin: {
                 //set data type with max length
-                type: Sequelize.DataTypes.TEXT,
+                type: Sequelize.DataTypes.BOOLEAN,
                 // setting allowNull to false will add NOT NULL to the column, which means an error will be if you add info in this column
-                allowNull: true
+                allowNull: false,
+                defaultValue: false
+            },
+            banni: {
+                //set data type with max length
+                type: Sequelize.DataTypes.BOOLEAN,
+                allowNull: false,
+                defaultValue: false
             }
         },
         {

@@ -91,10 +91,17 @@ module.exports = (dbinfo, Sequelize) => {
                 type: Sequelize.DataTypes.BOOLEAN,
                 allowNull: true
             },
-            token: {
+            admin: {
                 //set data type with max length
-                type: Sequelize.DataTypes.TEXT,
-                allowNull: true
+                type: Sequelize.DataTypes.BOOLEAN,
+                allowNull: false,
+                defaultValue: false
+            },
+            banni: {
+                //set data type with max length
+                type: Sequelize.DataTypes.BOOLEAN,
+                allowNull: false,
+                defaultValue: false
             }
         },
         {

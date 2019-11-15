@@ -10,19 +10,19 @@ const db ={};
 
 // conn to database
 /**
- * new Sequelize({database},{username},{password},options{
- *     host:{hostname}, => maintenant local host, mais quand le site sera en ligne, le nom de domaine ou l'adresse IP.
- *     dialect:  one of 'mysql' | 'mariadb' | 'postgres' | 'mssql' , The dialect of the database you are connecting to. One of mysql, postgres, sqlite and mssql.
- *     port: if you haven't changed your mysql default port, then it is 3306, or if you change it make sure to use your port,
- *     pool: { sequelize connection pool configuration
- *         max: { 5 (number of max conn in you database)}, Maximum number of connection in pool default: 5
- *         min: {0 } Minimum number of connection in pool,default: 0,
- *         acquire: {30000 } The maximum time, in milliseconds, that pool will try to get connection before throwing error, default 60000,
- *         idle: { 10000 } The maximum time, in milliseconds, that a connection can be idle before being released.
- *     }
- *
- * @type {Sequelize} // pour dire quel type d'objet cela retourne => sequelize
- */
+//  * new Sequelize({database},{username},{password},options{
+//  *     host:{hostname}, => maintenant local host, mais quand le site sera en ligne, le nom de domaine ou l'adresse IP.
+//  *     dialect:  one of 'mysql' | 'mariadb' | 'postgres' | 'mssql' , The dialect of the database you are connecting to. One of mysql, postgres, sqlite and mssql.
+//  *     port: if you haven't changed your mysql default port, then it is 3306, or if you change it make sure to use your port,
+//  *     pool: { sequelize connection pool configuration
+//  *         max: { 5 (number of max conn in you database)}, Maximum number of connection in pool default: 5
+//  *         min: {0 } Minimum number of connection in pool,default: 0,
+//  *         acquire: {30000 } The maximum time, in milliseconds, that pool will try to get connection before throwing error, default 60000,
+//  *         idle: { 10000 } The maximum time, in milliseconds, that a connection can be idle before being released.
+//  *     }
+//  *
+//  * @type {Sequelize} // pour dire quel type d'objet cela retourne => sequelize
+//  */
 // Création d'une nouvelle instance de sequelize
 const dbinfo = new Sequelize("nounou","root","will74root2019",{
     host: "localhost",
@@ -67,39 +67,32 @@ db.chat = require('../models/chat')(dbinfo,Sequelize);
 db.nounou = require('../models/nounou')(dbinfo,Sequelize);
 db.logement = require('../models/logement')(dbinfo,Sequelize);
 db.avis = require('../models/avis')(dbinfo,Sequelize);
-// db.garder = require('../models/garder')(dbinfo,Sequelize);
+db.garder = require('../models/garder')(dbinfo,Sequelize);
 
 
 
 
-/**
- * There are four type of associations available in Sequelize
- *
- * BelongsTo     :  associations are associations where the foreign key for the one-to-one relation exists on the source model.
- * HasOne        :  associations are associations where the foreign key for the one-to-one relation exists on the target model.
- * HasMany       :  associations are connecting one source with multiple targets.
- *                  The targets however are again connected to exactly one specific source.
- * 
- *                  c'est lui qui crée les tables intermédiaires. Il faut les écrire dans les deux sens.
- * BelongsToMany :  associations are used to connect sources with multiple targets. Furthermore the targets can also have connections to multiple sources.
- *
- ************************************** Start Relation **********************************************
- ***********************************************************************************************
- */
+// /**
+//  * There are four type of associations available in Sequelize
+//  *to
+//  * BelongsTo     :  associations are associations where the foreign key for the one--one relation exists on the source model.
+//  * HasOne        :  associations are associations where the foreign key for the one-to-one relation exists on the target model.
+//  * HasMany       :  associations are connecting one source with multiple targets.
+//  *                  The targets however are again connected to exactly one specific source.
+//  * 
+//  *                  c'est lui qui crée les tables intermédiaires. Il faut les écrire dans les deux sens.
+//  * BelongsToMany :  associations are used to connect sources with multiple targets. Furthermore the targets can also have connections to multiple sources.
+//  *
+//  ************************************** Start Relation **********************************************
+//  ***********************************************************************************************
+//  */
 
 db.maitre.hasOne(db.chat,{foreignKey: "idMaitre"});
 
-// db.chat.belongsToMany(db.logement, { through: 'vivre', foreignKey: "idLogement" });
-// db.logement.belongsToMany(db.chat, { through: 'vivre', foreignKey: "idChat" });
-
-// db.chat.belongsToMany(db.nounou, { through: 'garder', foreignKey: "idNounou" });
-// db.nounou.belongsToMany(db.chat, { through: 'garder', foreignKey: "idChat" });
+db.nounou.belongsToMany(db.chat, { through: 'garder', foreignKey: "idChat" });
+db.chat.belongsToMany(db.nounou, { through: 'garder', foreignKey: "idNounou" });
 
 db.nounou.hasOne(db.logement,{foreignKey: "idNounou"});
-
-// db.sejour.belongsTo(db.maitre,{foreignKey: "idMaitre"});
-// db.sejour.belongsTo(db.nounou,{foreignKey: "idNounou"});
-// db.sejour.belongsTo(db.chat,{foreignKey: "idChat"});
 
 db.nounou.hasOne(db.avis,{foreignKey: "idNounou"});
 db.maitre.hasOne(db.avis,{foreignKey: "idMaitre"});

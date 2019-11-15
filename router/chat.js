@@ -94,7 +94,7 @@ chat.post("/newCat", (req, res) => {
                   alert("votre chat a été mis à jour")  
                 })
                 .catch(err => {
-                    res.json({
+                    res.send({
                         error: "error" + err
                     })
                 })

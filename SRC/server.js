@@ -23,11 +23,9 @@ const chat = require("../router/chat");
 const logement = require("../router/logement");
 const nounou = require("../router/nounou");
 const avis = require("../router/avis");
-
+const garder = require("../router/garder");
 
 // si on ne les crée pas dans les modeles, on ne les met pas ici.
-// const garder = require("../router/garder");
-
 
 // require cors
 
@@ -93,7 +91,8 @@ app.use("/chat", chat);
 app.use("/logement", logement);
 app.use("/nounou", nounou);
 app.use("/avis", avis);
-// app.use("/sejour", sejour);
+app.use("/garder", garder);
+
 
 
 // we say our app to start to listen in the port and send back to us the msg with port info

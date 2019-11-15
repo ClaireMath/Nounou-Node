@@ -8,17 +8,17 @@ const express = require('express');
  * Route definition takes the following structure:
  * route.METHOD (PATH, HANDLER)
  *
- * * GET : The GET method requests a representation of the specified ressource. Requests using GET should only retrieve data and should have no other effect. (This is also true of some other HTTP methods.)[1] The W3C has published guidance principles on this distinction, saying, "Web application design should be informed by the above principles, but also by the relevant limitations."[22] See safe methods below.
- * HEAD : The HEAD method asks for a response identical to that of a GET request, but without the response body. This is useful for retrieving meta-information written in response headers, without having to transport the entire content.
- * POST : The POST method requests that the server accept the entity enclosed in the request as a new subordinate of the web ressource identified by the URI. The data POSTed might be, for example, an annotation for existing ressources; a message for a bulletin board, newsgroup, mailing list, or comment thread; a block of data that is the result of submitting a web form to a data-handling process; or an item to add to a database.[23]
- * PUT : The PUT method requests that the enclosed entity be stored under the supplied URI. If the URI refers to an already existing ressource, it is modified; if the URI does not point to an existing ressource, then the server can create the ressource with that URI.[24]
- * DELETE : The DELETE method deletes the specified ressource.
- * TRACE : The TRACE method echoes the received request so that a client can see what (if any) changes or additions have been made by intermediate servers.
- * OPTIONS : The OPTIONS method returns the HTTP methods that the server supports for the specified URL. This can be used to check the functionality of a web server by requesting '*' instead of a specific ressource.
- * PATCH : The PATCH method applies partial modifications to a ressource.
- *
- * @type { Router }
- */
+//  * * GET : The GET method requests a representation of the specified ressource. Requests using GET should only retrieve data and should have no other effect. (This is also true of some other HTTP methods.)[1] The W3C has published guidance principles on this distinction, saying, "Web application design should be informed by the above principles, but also by the relevant limitations."[22] See safe methods below.
+//  * HEAD : The HEAD method asks for a response identical to that of a GET request, but without the response body. This is useful for retrieving meta-information written in response headers, without having to transport the entire content.
+//  * POST : The POST method requests that the server accept the entity enclosed in the request as a new subordinate of the web ressource identified by the URI. The data POSTed might be, for example, an annotation for existing ressources; a message for a bulletin board, newsgroup, mailing list, or comment thread; a block of data that is the result of submitting a web form to a data-handling process; or an item to add to a database.[23]
+//  * PUT : The PUT method requests that the enclosed entity be stored under the supplied URI. If the URI refers to an already existing ressource, it is modified; if the URI does not point to an existing ressource, then the server can create the ressource with that URI.[24]
+//  * DELETE : The DELETE method deletes the specified ressource.
+//  * TRACE : The TRACE method echoes the received request so that a client can see what (if any) changes or additions have been made by intermediate servers.
+//  * OPTIONS : The OPTIONS method returns the HTTP methods that the server supports for the specified URL. This can be used to check the functionality of a web server by requesting '*' instead of a specific ressource.
+//  * PATCH : The PATCH method applies partial modifications to a ressource.
+//  *
+//  * @type { Router }
+//  */
 const nounou = express.Router();
 
 const cors = require('cors');
@@ -114,7 +114,7 @@ nounou.post("/login", (req, res) => {
                 res.json({token: token})
                 // si les deux mdp ne correspondent pas, tu envoies une erreur
             } else {
-                res.send('error mail or error mdp')
+                res.send("Connexion refusée, erreur dans l'email ou dans le mot de passe")
             }
         })
         // si tu n'as pas réussi à trouver l'employé, tu me renvoies l'erreur
@@ -289,7 +289,7 @@ nounou.get("/getOneByEmail", (req,res) =>{
     // find the employe by email
     db.nounou.findOne({
         attributes:{
-            exclude:["mdp", "telephone", "token", "created_at", "updated_at","idLogement"]
+            exclude:["mdp", "telephone", "admin", "created_at", "updated_at","idLogement"]
         },
         where:{email: req.body.email},
         include: [{
@@ -317,7 +317,7 @@ nounou.get("/getOneById/:id", (req,res) =>{
     // find the employe by email
     db.nounou.findOne({
         attributes:{
-            exclude:["mdp", "telephone", "token", "created_at", "updated_at","idLogement"]
+            exclude:["mdp", "telephone", "admin", "created_at", "updated_at","idLogement"]
         },
         where:{idNounou: req.params.id},
         include: [{
@@ -346,7 +346,7 @@ nounou.get("/All", (req,res) =>{
     // find the nounou by email
     db.nounou.findAll({
         attributes:{
-            exclude:["mdp", "telephone", "token", "created_at", "updated_at","idLogement"]
+            // exclude:["mdp", "telephone", "admin", "created_at", "updated_at","idLogement"]
         },
         include: [{
             model: db.logement,
@@ -367,7 +367,7 @@ nounou.get("/AllByVille/:ville", (req,res) =>{
     db.nounou.findAll({
             where:{ville: req.params.ville},
             attributes:{
-            exclude:["mdp", "telephone", "token", "created_at", "updated_at","idLogement"]
+            exclude:["mdp", "telephone", "admin", "created_at", "updated_at","idLogement"]
         },
         include: [{
             model: db.logement,
@@ -388,7 +388,7 @@ nounou.get("/AllByCodePostal/:code_postal", (req,res) =>{
     db.nounou.findAll({
             where:{code_postal: req.params.code_postal},
             attributes:{
-            exclude:["mdp", "telephone", "token", "created_at", "updated_at","idLogement"]
+            exclude:["mdp", "telephone", "admin", "created_at", "updated_at","idLogement"]
         },
         include: [{
             model: db.logement,
@@ -408,7 +408,7 @@ nounou.get("/AllByStatut", (req,res) =>{
     db.nounou.findAll({
             where:{statut_disponible: req.body.statut},
             attributes:{
-            exclude:["mdp", "telephone", "token", "created_at", "updated_at","idLogement"]
+            exclude:["mdp", "telephone", "admin", "created_at", "updated_at","idLogement"]
         },
         include: [{
             model: db.logement,
@@ -426,7 +426,7 @@ nounou.get("/AllByStatut", (req,res) =>{
 // afficher toutes les nounous DISPONIBLES par ville
 nounou.get("/AllByVilleEtStatut", (req,res) =>{
     db.nounou.findAll({
-            attributes: {exclude:["mdp", "telephone", "token", "created_at", "updated_at"]},
+            attributes: {exclude:["mdp", "telephone", "admin", "created_at", "updated_at"]},
             where: {
             [Op.and]: [{ville:req.body.ville}, {statut_disponible:req.body.statut_disponible}]
                },
@@ -471,7 +471,7 @@ nounou.post("/AllByVilleStatutCapaDaccueil", (req,res) =>{
         req.body.sans_animal = 0
     }
     db.nounou.findAll({
-            attributes: {exclude:["mdp", "telephone", "token", "created_at", "updated_at"]},
+            attributes: {exclude:["mdp", "telephone", "admin", "created_at", "updated_at"]},
             where: {
             [Op.and]: [{ville:req.body.ville}, {statut_disponible:req.body.statut_disponible}, {non_fumeur:req.body.non_fumeur},
                 {capacite_d_accueil: { [Op.gte]:req.body.capacite_d_accueil}} ]}  ,         
@@ -500,7 +500,7 @@ nounou.post("/AllByVilleStatutCapaDaccueil", (req,res) =>{
 // afficher toutes les nounous DISPONIBLES par code postal
 nounou.get('/AllByCPEtStatut', (req, res) => {
     db.nounou.findAll({
-        attributes: {exclude: ['mdp', 'telephone', 'token', 'created at', 'updated_at']},
+        attributes: {exclude: ['mdp', 'telephone', 'admin', 'created at', 'updated_at']},
         where: {
             [Op.and]: [{code_postal: req.body.cp}, {statut_disponible:req.body.statut}]
         },
@@ -519,7 +519,7 @@ nounou.get('/AllByCPEtStatut', (req, res) => {
 // afficher toutes les nounous DISPONIBLES par ville et capacité d'accueil
 nounou.get("/AllByVilleEtStatutEtCapacite", (req,res) =>{
     db.nounou.findAll({
-            attributes: {exclude:["mdp", "telephone", "token", "created_at", "updated_at"]},
+            attributes: {exclude:["mdp", "telephone", "admin", "created_at", "updated_at"]},
             where: {
             [Op.and]: [{ville:req.body.ville}, {statut_disponible:req.body.statut_disponible}, {capacite_d_accueil: req.body.mdp, capacite_d_accueil,
             }]

@@ -39,22 +39,28 @@ const fn = Sequelize.fn
 
 // Add new
 garder.post("/new", (req, res) => {
-    const garderdata = {
-        debut: req.body.debut,
-        fin: req.body.fin,
-        statut: req.body.statut,
-        idChat:req.body.id_chat,
-        idNounou:req.body.id_nounou
-    };    
-        db.garder.create(garderdata)  
-            .then(garder => {
-                            
-                res.json({garder: garder})
-            })
-            .catch(err => {
-                res.send('error ' + err)
-            })
-});
+  console.log(req.body);
+  const garderdata = {
+    debut: req.body.debut,
+    fin: req.body.fin,
+    message: req.body.message,
+    statut: 0,
+    idChat: req.body.id_chat,
+    idNounou: req.body.id_nounou
+  };
+    
+    garderdata.idChat.forEach(idChat => {
+        garderdata.idChat = idChat;
+    db.garder
+      .create(garderdata)
+      .then(garder => {
+        res.json({ garder: garder });
+      })
+      .catch(err => {
+        res.send("error " + err);
+      });
+  });
+});;
 
 // update 
 garder.put("/update", (req, res) => {
@@ -64,15 +70,16 @@ garder.put("/update", (req, res) => {
         .then(garder => {
            if(garder){
               garder.update({
-                type_de_personne_notee: req.body.type_de_personne_notee,
-                note: req.body.note,
-                commentaire: req.body.commentaire,
-                idMaitre:req.body.id_maitre,
-                idNounou:req.body.id_nounou      
-               })
+                debut: req.body.debut,
+                fin: req.body.fin,
+                message: req.body.message,
+                statut: req.body.statut,
+                idChat: req.body.id_chat,
+                idNounou: req.body.id_nounou
+              });
                res.json(
-                   "mise à jour par l'id de l'garder effectuée avec succès"
-               )
+                 "mise à jour de la garde par l'id effectuée avec succès"
+               );
            }
            else {
                res.json({

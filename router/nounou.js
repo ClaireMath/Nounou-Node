@@ -43,21 +43,21 @@ process.env.SECRET_KEY = "secret";
 // register
 nounou.post("/register", (req, res) => {
     const nounoudata = {
-        nom: req.body.nom,
-        prenom: req.body.prenom,
-        adresse: req.body.adresse,
-        ville: req.body.ville,
-        code_postal: req.body.code_postal,
-        telephone: req.body.telephone,
-        email: req.body.email,
-        mdp: req.body.mdp,
-        capacite_d_accueil: req.body.capacite_d_accueil,
-        a_deja_eu_des_chats: req.body.a_deja_eu_des_chats,
-        a_deja_eu_des_animaux: req.body.a_deja_eu_des_animaux,
-        non_fumeur: req.body.non_fumeur,
-        peut_consacrer_n_heure_par_jour: req.body.peut_consacrer_n_heure_par_jour,
-        description: req.body.description,
-        statut_disponible: req.body.statut_disponible
+      nom: req.body.nom,
+      prenom: req.body.prenom,
+      adresse: req.body.adresse,
+      ville: req.body.ville,
+      code_postal: req.body.code_postal,
+      telephone: req.body.telephone,
+      email: req.body.email,
+      mdp: req.body.mdp,
+      capacite_d_accueil: req.body.capacite_d_accueil,
+      a_deja_eu_des_chats: req.body.a_deja_eu_des_chats,
+      a_deja_eu_des_animaux: req.body.a_deja_eu_des_animaux,
+      non_fumeur: req.body.non_fumeur,
+      peut_consacrer_n_heure_par_jour: req.body.peut_consacrer_n_heure_par_jour,
+      description: req.body.description,
+      statut_disponible: req.body.statut_disponible,
     };
     // find out if nounou exists or not
         db.nounou.findOne({
@@ -102,25 +102,179 @@ nounou.post("/login", (req, res) => {
     })
     // ensuite si tu trouves, tu me retournes la réponse
         .then(user => {
-            console.log("1er ok")
-            // si le mot de passe crypté correspond à celui récup par la requete
-            // dans ce cas là tu me signes un token, un token contient toutes les infos de la nounou
-            if (bcrypt.compareSync(req.body.mdp, user.mdp)) {
-                console.log("ok")
-                console.log(user)
-                let token = jwt.sign(user.dataValues, process.env.SECRET_KEY, {
-                    expiresIn: 1440
-                });
-                res.json({token: token})
-                // si les deux mdp ne correspondent pas, tu envoies une erreur
-            } else {
-                res.send("Connexion refusée, erreur dans l'email ou dans le mot de passe")
-            }
+           if (user.banni == 0) {
+             // si le mot de passe crypté correspond à celui récup par la requete
+             // dans ce cas là tu me signes un token, un token contient toutes les infos de la nounou
+             if (bcrypt.compareSync(req.body.mdp, user.mdp)) {
+               console.log("ok");
+               console.log(user);
+               let token = jwt.sign(user.dataValues, process.env.SECRET_KEY, {
+                 expiresIn: 1440
+               });
+               res.json({ token: token });
+               // si les deux mdp ne correspondent pas, tu envoies une erreur
+             } else {
+               res.send(
+                 "Connexion refusée, erreur dans l'email ou dans le mot de passe"
+               );
+             }
+           } else {
+             res.json({
+               banni: "Vous êtes banni, vous n'avez plus accès au site"
+             });
+           }
         })
         // si tu n'as pas réussi à trouver l'employé, tu me renvoies l'erreur
         .catch(err => {
             res.send('error' + err)
         })
+});
+
+
+// // update : BANNIR
+// nounou.put("/banById", (req, res) => {
+
+//     if (req.body.banni == true) {
+//       req.body.banni = 1;
+//     } else {
+//       req.body.banni = 0;
+//     }
+
+//   db.nounou
+//     .findOne({
+//       where: { idNounou: req.body.idNounou }
+//     })
+//     .then(user => {
+//       if (user) {
+//         user.update({
+//           banni: req.body.banni=1
+//         });
+//         res.json("Vous venez de bannir cet utilisateur");
+//       } else {
+//         res.json({
+//           error: "L'utilisateur ne peut pas être banni"
+//         });
+//       }
+//     })
+//     .catch(err => {
+//       res.send("error" + err);
+//     });
+// });
+
+
+// update : BAN AND UN-BAN
+nounou.put("/banUnBanById", (req, res) => {
+  
+  db.nounou
+    .findOne({
+      where: { idNounou: req.body.idNounou }
+    })
+    .then(user => {
+      if (user) {
+          user
+            .update({
+              banni: req.body.banni
+            })
+            .then(user => {
+              db.nounou
+                .findOne({
+                  where: { idNounou: req.body.idNounou }
+                })
+                .then(user => {
+                  
+                  res.json(user);
+                })
+                .catch(err => {
+                  res.send("error " + err);
+                });
+            })
+            .catch(err => {
+              res.send("error " + err);
+            });
+      } else {
+        res.json({
+          error: "Impossible de modifier le statut 'banni'."
+        });
+      }
+    })
+    .catch(err => {
+      res.send("error" + err);
+    });
+});
+
+// update : MAKE AND UNMAKE ADMIN
+nounou.put("/makeUnMakeAdminById", (req, res) => {
+//   if (req.body.admin == true) {
+//     req.body.admin = 1;
+//   } else {
+//     req.body.admin = 0;
+//   }
+  db.nounou
+    .findOne({
+      where: { idNounou: req.body.idNounou }
+    })
+      
+      
+    .then(user => {
+      if (user) {
+        user
+          .update({
+            admin: req.body.admin
+          })
+          .then(user => {
+            db.nounou
+              .findOne({
+                where: { idNounou: req.body.idNounou }
+              })
+              .then(user => {
+                res.json(user);
+              })
+              .catch(err => {
+                res.send("error " + err);
+              });
+          })
+          .catch(err => {
+            res.send("error " + err);
+          });
+      } else {
+        res.json({
+          error: "Impossible de modifier le statut 'admin'."
+        });
+      }
+    })
+    .catch(err => {
+      res.send("error" + err);
+    });
+});
+
+// update : UN-MAKEADMIN
+nounou.put("/unMakeAdminById", (req, res) => {
+
+    if (req.body.admin == true) {
+      req.body.admin = 1;
+    } else {
+      req.body.admin = 0;
+    }
+
+  db.nounou
+    .findOne({
+      where: { idNounou: req.body.idNounou }
+    })
+    .then(user => {
+      if (user) {
+        user.update({
+          admin: req.body.admin=0
+        });
+        res.json("Cet utilisateur n'est plus admin");
+      } else {
+        res.json({
+          error: "Impossible de retirer le statut 'admin' à cet utilisateur"
+        });
+      }
+    })
+    .catch(err => {
+      res.send("error" + err);
+    });
 });
 
 
@@ -325,6 +479,7 @@ nounou.get("/getOneById/:id", (req,res) =>{
         }]
     }).then(nounou =>{
         // if nounou exists :
+
         if(nounou) {
             res.json({
                 nounou: nounou
@@ -474,7 +629,7 @@ nounou.post("/AllByVilleStatutCapaDaccueil", (req,res) =>{
             attributes: {exclude:["mdp", "telephone", "admin", "created_at", "updated_at"]},
             where: {
             [Op.and]: [{ville:req.body.ville}, {statut_disponible:req.body.statut_disponible}, {non_fumeur:req.body.non_fumeur},
-                {capacite_d_accueil: { [Op.gte]:req.body.capacite_d_accueil}} ]}  ,         
+                    {banni: 0 }, {capacite_d_accueil: { [Op.gte]:req.body.capacite_d_accueil}} ]}  ,         
                
             include: [{
                 model: db.logement,

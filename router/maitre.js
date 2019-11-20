@@ -41,10 +41,10 @@ const Op = Sequelize.Op;
  // add new maitre
  maitre.post("/newMaitre", (req, res) => {
     const maitredata = {
-        nom: req.body.nom,
-        prenom: req.body.prenom,
-        email: req.body.email,
-        mdp: req.body.mdp
+      nom: req.body.nom,
+      prenom: req.body.prenom,
+      email: req.body.email,
+      mdp: req.body.mdp,
     };
         // try to find out if maitre exists in base
         db.maitre.findOne({
@@ -90,26 +90,36 @@ const Op = Sequelize.Op;
 // correspond à celui envoyé dans l'interface
 maitre.post("/login", (req, res) => {
     db.maitre.findOne({
-        where: {email: req.body.email}
+        where: { email: req.body.email }
     })
-    // ensuite si tu trouves, tu me retournes la réponse
+        // ensuite si tu trouves, tu me retournes la réponse
         .then(user => {
-            // si le mot de passe crypté correspond à celui récup par la requête
-            // dans ce cas là tu me signes un token
-            if (bcrypt.compareSync(req.body.mdp, user.mdp)) {
-                // dataValues (récupère les données de l'utilisateur recherché sur le findOne)
-                let token = jwt.sign(user.dataValues, process.env.SECRET_KEY, {
-                    expiresIn: 1440
-                });
-                res.json({token: token})
-                // si les deux mdp ne correspondent pas, tu envoies une erreur
+            if (user.banni == 0) {
+                // si le mot de passe crypté correspond à celui récup par la requête             
+                // dans ce cas là tu me signes un token
+                    if (bcrypt.compareSync(req.body.mdp, user.mdp)) {
+                    // dataValues (récupère les données de l'utilisateur recherché sur le findOne)
+                    let token = jwt.sign(
+                        user.dataValues,
+                        process.env.SECRET_KEY,
+                        {
+                            expiresIn: 1440
+                        }
+                    );
+                    res.json({ token: token });
+                    // si les deux mdp ne correspondent pas, tu envoies une erreur
+                } else {
+                    res.send(
+                        "Connexion refusée, erreur dans l'email ou dans le mot de passe"
+                    );
+                }
             } else {
-                res.send("Connexion refusée, erreur dans l'email ou dans le mot de passe")
-                alert("Connexion refusée, erreur dans l'email ou dans le mot de passe")
+                res.json({ banni: "Vous êtes banni, vous n'avez plus accès au site" })
             }
-        })
+            })
         // si tu n'as pas réussi à trouver le maitre, tu me renvoies l'erreur
-        .catch(err => {
+    .catch(err => {
+        
             res.send('erreur' + err)
         })
 });
@@ -218,7 +228,90 @@ maitre.post("/login", (req, res) => {
 //             })
 //             });
 // });
+// update : BAN AND UN-BAN
+maitre.put("/banUnBanById", (req, res) => {
+   
+  db.maitre
+    .findOne({
+      where: { idMaitre: req.body.idMaitre }
+    })
+    .then(user => {
+      if (user) {
+          user
+            .update({
+              banni: req.body.banni
+            })
+            .then(user => {
+              db.maitre
+                .findOne({
+                  where: { idMaitre: req.body.idMaitre }
+                })
+                .then(user => {
+                  
+                  res.json(user);
+                })
+                .catch(err => {
+                  res.send("error " + err);
+                });
+            })
+            .catch(err => {
+              res.send("error " + err);
+            });
+      } else {
+        res.json({
+          error: "Impossible de modifier le statut 'banni'."
+        });
+      }
+    })
+    .catch(err => {
+      res.send("error" + err);
+    });
+});
 
+// update : MAKE AND UNMAKE ADMIN
+maitre.put("/makeUnMakeAdminById", (req, res) => {
+//   if (req.body.admin == true) {
+//     req.body.admin = 1;
+//   } else {
+//     req.body.admin = 0;
+//   }
+  db.maitre
+    .findOne({
+      where: { idMaitre: req.body.idMaitre }
+    })
+      
+      
+    .then(user => {
+      if (user) {
+        user
+          .update({
+            admin: req.body.admin
+          })
+          .then(user => {
+            db.maitre
+              .findOne({
+                where: { idMaitre: req.body.idMaitre }
+              })
+              .then(user => {
+                res.json(user);
+              })
+              .catch(err => {
+                res.send("error " + err);
+              });
+          })
+          .catch(err => {
+            res.send("error " + err);
+          });
+      } else {
+        res.json({
+          error: "Impossible de modifier le statut 'admin'."
+        });
+      }
+    })
+    .catch(err => {
+      res.send("error" + err);
+    });
+});
 
 // update1 (.post ou .put fonctionnent tout les deux)
 maitre.post("/updateByEmail", (req, res) => {
@@ -455,9 +548,9 @@ maitre.get("/displayAll", (req,res) =>{
         },
         include: [{
             model: db.chat,
-        }],
-        include: [{
-            model: db.avis,
+            // include: [{
+            //     model: db.avis
+            // }]
         }]
     })
     .then(maitres =>{
@@ -559,9 +652,9 @@ maitre.post("/AllByVilleEtStatut", (req,res) =>{
         req.body.a_peur_des_enfants = 0
     }
     db.maitre.findAll({
-            attributes: {exclude:["mdp","created_at", "updated_at", "telephone", "admin", "banni"]},
+            attributes: {exclude:["mdp","created_at", "updated_at", "telephone"]},
             where: {
-            [Op.and]: [{ville:req.body.ville}, {statut_disponible:req.body.statut_disponible}]
+                [Op.and]: [{banni: 0}, {ville:req.body.ville}, {statut_disponible:req.body.statut_disponible}]
                },
                include: [{  
                 model: db.avis,

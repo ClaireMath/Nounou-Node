@@ -1,6 +1,6 @@
 /************************************** Start Require module ****************************************************
  *****************************************************************************************************************/
-const express = require('express');
+const express = require("express");
 
 // /**
 //  * Routing refers to determining how an application responds to a client request to a particular endpoint, which is a URI (or path) and a specific HTTP request method (GET, POST, and so on).
@@ -19,28 +19,40 @@ const express = require('express');
 //  *
 //  * @type { Router }
 //  */
-const garder = express.Router();
+const garde = express.Router();
 
-const cors = require('cors');
-const jwt = require('jsonwebtoken');
-const bcrypt = require('bcrypt');
+// const cors = require("cors");
+// const jwt = require("jsonwebtoken");
+// const bcrypt = require("bcrypt");
 
-const db = require('../database/db');
+const db = require("../database/db");
 
-const Sequelize = require('sequelize');
+const Sequelize = require("sequelize");
 // sequilze.op permet de récupérer tous les opérateurs
-const Op = Sequelize.Op
-const fn = Sequelize.fn
+const Op = Sequelize.Op;
+const fn = Sequelize.fn;
 /************************************** End Require module ****************************************************
  *****************************************************************************************************************/
 
 /************************************** Start route module ****************************************************
  *****************************************************************************************************************/
 
-// Add new
-garder.post("/new", (req, res) => {
+// ************************************ NodeMailer *********************************************
+const nodemailer = require('nodemailer')
+const sendgridTransport = require('nodemailer-sendgrid-transport')
+const transporter = nodemailer.createTransport(
+  sendgridTransport({
+    auth: {
+      api_key: "-I0Pw9stTBK3ToHiciZqVg"
+    }
+  }));
+
+// ********************************************************************************
+
+// Nouvelle demande de garde d'un maitre qui chercher une nounou
+garde.post("/new", (req, res) => {
   console.log(req.body);
-  const garderdata = {
+  const gardedata = {
     debut: req.body.debut,
     fin: req.body.fin,
     message: req.body.message,
@@ -48,126 +60,173 @@ garder.post("/new", (req, res) => {
     idChat: req.body.id_chat,
     idNounou: req.body.id_nounou
   };
-    
-    garderdata.idChat.forEach(idChat => {
-        garderdata.idChat = idChat;
-    db.garder
-      .create(garderdata)
-      .then(garder => {
-        res.json({ garder: garder });
+  
+  for (let index = 0; index < req.body.id_chat.length; index++) {
+    console.log(req.body.id_chat[index]);
+    db.garde
+      .create({
+        debut: req.body.debut,
+        fin: req.body.fin,
+        message: req.body.message,
+        statut: 0,
+        idChat: req.body.id_chat[index],
+        idNounou: req.body.id_nounou
+      })
+      .then(garde => {
+        res.json({ garde: garde });
       })
       .catch(err => {
         res.send("error " + err);
       });
-  });
-});;
-
-// update 
-garder.put("/update", (req, res) => {
-    db.garder.findOne({
-        where: {idgarder: req.body.id_garder}
-    })
-        .then(garder => {
-           if(garder){
-              garder.update({
-                debut: req.body.debut,
-                fin: req.body.fin,
-                message: req.body.message,
-                statut: req.body.statut,
-                idChat: req.body.id_chat,
-                idNounou: req.body.id_nounou
-              });
-               res.json(
-                 "mise à jour de la garde par l'id effectuée avec succès"
-               );
-           }
-           else {
-               res.json({
-                   error: "can't update this garder, it does not exist"
-               })
-           }
-        })
-        .catch(err => {
-            res.send('error ' + err)
-        })
+  }
 });
 
-// get all garder d'un maitre précis
- 
-garder.get("/AllgarderByMaitre", (req,res) =>{
-    db.garder.findAll({
-        where: { 
-            [Op.and]: [{type_de_personne_notee: "maitre"} , {idMaitre:req.body.id_maitre}]
-            }, 
-            order: [["note", "desc"]],
-        attributes:{
-            exclude:["created_at", "updated_at"]
-        }
+// Add new demande d'une nounou pour garder un chat
+garde.post("/newResquestForACat", (req, res) => {
+  console.log(req.body);
+  const gardedata = {
+    debut: req.body.debut,
+    fin: req.body.fin,
+    message: req.body.message,
+    statut: 0,
+    idChat: req.body.id_chat,
+    idNounou: req.body.id_nounou
+  };
+  // console.log(typeof req.body.id_chat);
+  // console.log(gardedata.idChat);
+    db.garde
+      .create({
+        debut: req.body.debut,
+        fin: req.body.fin,
+        message: req.body.message,
+        statut: 0,
+        idChat: req.body.id_chat,
+        idNounou: req.body.id_nounou
+      })
+      .then(garde => {
+        res.json({ garde: garde });
+      })
+      .catch(err => {
+        res.send("error " + err);
+      });
+});
+  
+// update
+garde.put("/update", (req, res) => {
+  db.garde
+    .findOne({
+      where: { idgarde: req.body.id_garde }
     })
-    .then(garders =>{
-        res.json(garders)
+    .then(garde => {
+      if (garde) {
+        garde.update({
+          debut: req.body.debut,
+          fin: req.body.fin,
+          message: req.body.message,
+          statut: req.body.statut,
+          idChat: req.body.id_chat,
+          idNounou: req.body.id_nounou
+        });
+        res.json("mise à jour de la garde par l'id effectuée avec succès");
+      } else {
+        res.json({
+          error: "can't update this garde, it does not exist"
+        });
+      }
     })
-        .catch(err =>{
-            // send back the error message 
+    .catch(err => {
+      res.send("error " + err);
+    });
+});
+
+// get all garde d'un maitre précis
+
+garde.get("/AllgardeByMaitre", (req, res) => {
+  db.garde
+    .findAll({
+      where: {
+        [Op.and]: [
+          { type_de_personne_notee: "maitre" },
+          { idMaitre: req.body.id_maitre }
+        ]
+      },
+      order: [["note", "desc"]],
+      attributes: {
+        exclude: ["created_at", "updated_at"]
+      }
+    })
+    .then(gardes => {
+      res.json(gardes);
+    })
+    .catch(err => {
+      // send back the error message
+      res.json("erreur" + err);
+    });
+});
+
+garde.get("/AllgardeByNounou", (req, res) => {
+  db.garde
+    .findAll({
+      where: {
+        [Op.and]: [
+          { type_de_personne_notee: "nounou" },
+          { idNounou: req.body.id_nounou }
+        ]
+      },
+      order: [["note", "desc"]],
+      attributes: {
+        exclude: ["created_at", "updated_at"]
+      }
+    })
+    .then(gardes => {
+      res.json(gardes);
+    })
+    .catch(err => {
+      // send back the error message
+      res.json("erreur" + err);
+    });
+});
+
+// // delete garde via id
+garde.delete("/delete", (req, res) => {
+  // find the garde you want to delete
+  db.garde
+    .findOne({
+      where: { idgarde: req.body.id_garde }
+    })
+    .then(garde => {
+      // if garde exists :
+      if (garde) {
+        // delete garde
+        garde
+          .destroy()
+          .then(() => {
+            // send back the confirmation that garde is deleted
+            res.json("garde supprimé via ID");
+          })
+          // catch if error
+          .catch(err => {
+            // send back the error to inform in json
             res.json("erreur" + err);
-        })
-});
-
-garder.get("/AllgarderByNounou", (req,res) =>{
-    db.garder.findAll({
-        where: { 
-            [Op.and]: [{type_de_personne_notee: "nounou"} , {idNounou:req.body.id_nounou}]
-            }, 
-            order: [["note", "desc"]],
-        attributes:{
-            exclude:["created_at", "updated_at"]
-        }
+          });
+      } else {
+        // send back the error message to inform that you can't delete this garde, it does not exist in your database
+        res.json({
+          error:
+            "impossible de supprimer cet garde, il n'existe pas dans la base de données"
+        });
+      }
     })
-    .then(garders =>{
-        res.json(garders)
-    })
-        .catch(err =>{
-            // send back the error message 
-            res.json("erreur" + err);
-        })
+    .catch(err => {
+      // send back the message error
+      res.json("erreur" + err);
+    });
 });
-
-
-// // delete garder via id
-garder.delete("/delete", (req,res) =>{
-    // find the garder you want to delete
-    db.garder.findOne({
-        where:{idgarder: req.body.id_garder}
-    }).then(garder =>{
-        // if garder exists :
-        if(garder) {
-            // delete garder
-            garder.destroy().then(() => {
-                // send back the confirmation that garder is deleted
-                res.json("garder supprimé via ID")
-            })
-            // catch if error
-                .catch(err => {
-                    // send back the error to inform in json
-                    res.json("erreur" + err)
-                })
-        }
-        else {
-            // send back the error message to inform that you can't delete this garder, it does not exist in your database
-            res.json({error : "impossible de supprimer cet garder, il n'existe pas dans la base de données"})
-        }
-    })
-        .catch(err =>{
-            // send back the message error
-            res.json("erreur" + err);
-        })
-});
-
 
 // // delete by prénom et id maitre
 // chat.delete("/deleteByPrenomEtIDMaitre", (req, res) => {
 //     db.chat.findOne({
-//         where: { 
+//         where: {
 //     [Op.and]: [{prenom_chat:req.body.prenom_chat}, {idMaitre:req.body.id_maitre}]
 // }
 //     })
@@ -196,8 +255,7 @@ garder.delete("/delete", (req,res) =>{
 //                 })
 //         });
 
-
-module.exports = garder;
+module.exports = garde;
 
 /************************************** end router module ****************************************************
  *****************************************************************************************************************/

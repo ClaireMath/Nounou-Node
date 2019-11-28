@@ -23,7 +23,7 @@ const chat = require("../router/chat");
 const logement = require("../router/logement");
 const nounou = require("../router/nounou");
 const avis = require("../router/avis");
-const garder = require("../router/garder");
+const garde = require("../router/garde");
 
 // si on ne les crée pas dans les modeles, on ne les met pas ici.
 
@@ -79,6 +79,17 @@ app.use(bodyParser.json());
  //extended=false is a configuration option that tells the parser to use the classic encoding. When using it, values can be only strings or arrays.
  app.use(bodyParser.urlencoded({extended: false}));
 
+
+/* Notre code pour nodemailer */
+//  var transporter = nodemailer.createTransport(
+//    (service: "gmail"),
+//    (auth: {
+//      user: "sender@gmail.com",
+//      pass: "password"
+//    })
+//  );
+ app.post("/email", function(req, res, next) {
+ });
 // we will then prefix for our routes
 // we will call every route we need in this app here
 // on met les prefixes qui iront des routes dans l'interface ou dans postman, 
@@ -91,7 +102,7 @@ app.use("/chat", chat);
 app.use("/logement", logement);
 app.use("/nounou", nounou);
 app.use("/avis", avis);
-app.use("/garder", garder);
+app.use("/garde", garde);
 
 
 

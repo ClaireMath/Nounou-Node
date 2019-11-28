@@ -562,121 +562,135 @@ maitre.get("/displayAll", (req,res) =>{
         })
 });
 
-// afficher tous les maitres par ville
-maitre.get("/All/:ville", (req,res) =>{
-    // find the maitre by email
-    db.maitre.findAll({
-        attributes:{
-            exclude:["password","created_at", "updated_at","telephone","admin", "banni"]
-        },
-        where:{ville: req.params.ville},
-        include: [{
-            model: db.chat
-        }],
-        include: [{
-            model: db.avis,
-        }]
-    })
-    .then(maitres =>{
-        res.json(maitres)
-    })
-        .catch(err =>{
-            // send back the error message 
-            res.json("erreur " + err);
-        })
-});
+// // afficher tous les maitres par ville
+// maitre.get("/All/:ville", (req,res) =>{
+//     // find the maitre by email
+//     db.maitre.findAll({
+//         attributes:{
+//             exclude:["password","created_at", "updated_at","telephone","admin", "banni"]
+//         },
+//         where:{ville: req.params.ville},
+//         include: [{
+//             model: db.chat
+//         }],
+//         include: [{
+//             model: db.avis,
+//         }]
+//     })
+//     .then(maitres =>{
+//         res.json(maitres)
+//     })
+//         .catch(err =>{
+//             // send back the error message 
+//             res.json("erreur " + err);
+//         })
+// });
 
-// afficher tous les maitres par code postal
-maitre.get("/displayByCp/:code_postal", (req,res) =>{
-    // find the maitre by email
-    db.maitre.findAll({
-            where:{code_postal: req.params.code_postal},
-            attributes:{
-            exclude:["mdp","created_at", "updated_at","telephone", "admin", "banni"],
-        },
-        include: [{
-            model: db.chat,
-        }],
-        include: [{
-            model: db.avis,
-        }]
-    })
-    .then(maitres =>{
-        res.json(maitres)
-    })
-        .catch(err =>{
-            // send back the error message 
-            res.json("erreur " + err);
-        })
-});
+// // afficher tous les maitres par code postal
+// maitre.get("/displayByCp/:code_postal", (req,res) =>{
+//     // find the maitre by email
+//     db.maitre.findAll({
+//             where:{code_postal: req.params.code_postal},
+//             attributes:{
+//             exclude:["mdp","created_at", "updated_at","telephone", "admin", "banni"],
+//         },
+//         include: [{
+//             model: db.chat,
+//         }],
+//         include: [{
+//             model: db.avis,
+//         }]
+//     })
+//     .then(maitres =>{
+//         res.json(maitres)
+//     })
+//         .catch(err =>{
+//             // send back the error message 
+//             res.json("erreur " + err);
+//         })
+// });
 
 // afficher tous les maitres par status 
-maitre.get("/AllByStatut", (req,res) =>{
-    // find the maitre by email
-    db.maitre.findAll({
-            where:{statut_disponible: req.body.statut_disponible},
-            attributes:{
-            exclude:["mdp","created_at", "updated_at","telephone", "admin", "banni"]
-        },
-        include: [{
-            model: db.chat,
-        }],
-        include: [{
-            model: db.avis,
-        }]
-    })
-    .then(maitres =>{
-        res.json(maitres)
-    })
-        .catch(err =>{
-            // send back the error message 
-            res.json("erreur " + err);
-        })
-});
-// afficher toutes les maitres DISPONIBLES par ville
+// maitre.get("/AllByStatut", (req,res) =>{
+//     // find the maitre by email
+//     db.maitre.findAll({
+//             where:{statut_disponible: req.body.statut_disponible},
+//             attributes:{
+//             exclude:["mdp","created_at", "updated_at","telephone", "admin", "banni"]
+//         },
+//         include: [{
+//             model: db.chat,
+//         }],
+//         include: [{
+//             model: db.avis,
+//         }]
+//     })
+//     .then(maitres =>{
+//         res.json(maitres)
+//     })
+//         .catch(err =>{
+//             // send back the error message 
+//             res.json("erreur " + err);
+//         })
+// });
+
+
+// ok afficher toutes les maitres DISPONIBLES par ville
 maitre.post("/AllByVilleEtStatut", (req,res) =>{
     console.log(req.body);
-    if (req.body.tolere_les_chats == true) {
-        req.body.tolere_les_chats = 1
+    if (req.body.chat.tolere_les_chats == true) {
+        req.body.chat.tolere_les_chats = 1;
     } else {
-        req.body.tolere_les_chats = 0
+        req.body.chat.tolere_les_chats = 0;
     }
-    if (req.body.tolere_les_animaux == true) {
-        req.body.tolere_les_animaux = 1
+    if (req.body.chat.tolere_les_animaux == true) {
+      req.body.chat.tolere_les_animaux = 1;
     } else {
-        req.body.tolere_les_animaux = 0
+      req.body.chat.tolere_les_animaux = 0;
     }
-    if (req.body.a_peur_des_enfants == false) {
-        req.body.a_peur_des_enfants = 1
+    if (req.body.chat.a_peur_des_enfants == false) {
+      req.body.chat.a_peur_des_enfants = 1;
     } else {
-        req.body.a_peur_des_enfants = 0
+      req.body.chat.a_peur_des_enfants = 0;
     }
-    db.maitre.findAll({
-            attributes: {exclude:["mdp","created_at", "updated_at", "telephone"]},
+    db.maitre
+      .findAll({
+        attributes: {
+          exclude: ["mdp", "created_at", "updated_at", "telephone"]
+        },
+        where: {
+          [Op.and]: [
+            { banni: 0 },
+            { ville: req.body.maitre.ville },
+            { statut_disponible: req.body.maitre.statut_disponible }
+          ]
+        },
+        include: [
+          {
+            model: db.chat,
             where: {
-                [Op.and]: [{banni: 0}, {ville:req.body.ville}, {statut_disponible:req.body.statut_disponible}]
-               },
-               include: [{  
-                model: db.avis,
-                order: [["note", "desc"]] ,
-                model: db.chat,
-                where: 
-                {
-                [Op.and]: [{tolere_les_chats:req.body.tolere_les_chats}, {tolere_les_animaux:req.body.tolere_les_animaux}, {a_peur_des_enfants:req.body.a_peur_des_enfants}]
-                },
-     }],
-            // include: [{
-            //     model: db.avis,
-            //     order: [["note", "desc"]]
-            // }] on ne peut pas lier 3 tables enemble via le include
-    })
-    .then(maitres =>{
-        res.json(maitres)
-    })
-        .catch(err =>{
-            // send back the error message 
-            res.json("erreur " + err);
-        })
+              [Op.and]: [
+                { tolere_les_chats: req.body.chat.tolere_les_chats },
+                { tolere_les_animaux: req.body.chat.tolere_les_animaux },
+                { a_peur_des_enfants: req.body.chat.a_peur_des_enfants }
+              ]
+            }
+            // model: db.avis,
+            // order: [["note", "desc"]]
+          }
+        ]
+        // include: [{
+        //     model: db.avis,
+        //     order: [["note", "desc"]]
+        // }] on ne peut pas lier 3 tables ensemble via le include
+      })
+      .then(maitres => {
+        res.json(maitres);
+      })
+      .catch(err => {
+        // send back the error message
+        res.json("erreur " + err);
+      });
 });
 
 // afficher toutes les maitres DISPONIBLES par code postal

@@ -1,8 +1,16 @@
 // exports table
 module.exports = (dbinfo, Sequelize) => {
     return dbinfo.define(
-      "garder",
+      "garde",
       {
+        idGarde: {
+          // set date type
+          type: Sequelize.DataTypes.INTEGER,
+          // set primaryKey
+          primaryKey: true,
+          // set autoIncrement
+          autoIncrement: true
+        },
         //field name
         debut: {
           // set data type with max length

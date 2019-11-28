@@ -24,19 +24,19 @@ const db ={};
 //  * @type {Sequelize} // pour dire quel type d'objet cela retourne => sequelize
 //  */
 // Création d'une nouvelle instance de sequelize
-const dbinfo = new Sequelize("nounou","root","will74root2019",{
-    host: "localhost",
-    // le type de base de données mysql, mongodb, nosql...
-    dialect: "mysql",
-    port: 3306,
-    pool:{
-        // nombre de connections possibles à la fois à la bdd
-        max:5,
-        min:0,
-        // délai max de non réponse
-        acquire: 30000,
-        idle: 10000,
-    }
+const dbinfo = new Sequelize("nounou", "root", "will74root2019", {
+  host: "localhost",
+  // le type de base de données mysql, mongodb, nosql...
+  dialect: "mysql",
+  port: 3306,
+  pool: {
+    // nombre de connections possibles à la fois à la bdd
+    max: 5,
+    min: 0,
+    // délai max de non réponse
+    acquire: 30000,
+    idle: 10000
+  }
 });
 
 dbinfo.authenticate()   // pour tester si la connexion est établie
@@ -67,7 +67,7 @@ db.chat = require('../models/chat')(dbinfo,Sequelize);
 db.nounou = require('../models/nounou')(dbinfo,Sequelize);
 db.logement = require('../models/logement')(dbinfo,Sequelize);
 db.avis = require('../models/avis')(dbinfo,Sequelize);
-db.garder = require('../models/garder')(dbinfo,Sequelize);
+db.garde = require('../models/garde')(dbinfo,Sequelize);
 
 
 
@@ -89,8 +89,10 @@ db.garder = require('../models/garder')(dbinfo,Sequelize);
 
 db.maitre.hasOne(db.chat,{foreignKey: "idMaitre"});
 
-db.nounou.belongsToMany(db.chat, { through: 'garder', foreignKey: "idChat" });
-db.chat.belongsToMany(db.nounou, { through: 'garder', foreignKey: "idNounou" });
+db.garde.hasOne(db.avis, { foreignKey: "idGarde" });
+
+db.chat.hasMany(db.garde, { foreignKey: "idChat" });
+db.nounou.hasMany(db.garde, { foreignKey: "idNounou" });
 
 db.nounou.hasOne(db.logement,{foreignKey: "idNounou"});
 
@@ -99,8 +101,8 @@ db.maitre.hasOne(db.avis,{foreignKey: "idMaitre"});
 db.avis.belongsTo(db.nounou,{foreignKey: "idNounou"});
 db.avis.belongsTo(db.maitre,{foreignKey: "idMaitre"});
 
-// db.nounou.hasOne(db.garder,{foreignKey: "idNounou"});
-// db.chat.hasOne(db.garder,{foreignKey: "idChat"});
+// db.nounou.hasOne(db.garde,{foreignKey: "idNounou"});
+// db.chat.hasOne(db.garde,{foreignKey: "idChat"});
 /**************************************************** End of block Relation ***************************************************
 *******************************************************************************************************************************/
 

@@ -639,8 +639,6 @@ nounou.post("/AllByVilleStatutCapaDaccueil", (req,res) =>{
                        },
             }],
             
-            // order: [["capacite_d_accueil", "desc"]]
-            
     })
     .then(nounous =>{
         console.log(nounous)

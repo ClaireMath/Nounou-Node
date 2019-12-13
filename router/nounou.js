@@ -468,7 +468,7 @@ nounou.get("/getOneByEmail", (req,res) =>{
 });
 // find by id nounou
 nounou.get("/getOneById/:id", (req,res) =>{
-    // find the employe by email
+    // find the nounou by email
     db.nounou.findOne({
         attributes:{
             exclude:["mdp", "telephone", "admin", "created_at", "updated_at","idLogement"]
@@ -644,8 +644,7 @@ nounou.post("/AllByVilleStatutCapaDaccueil", (req,res) =>{
         console.log(nounous)
         res.json(nounous)
     })
-        .catch(err =>{
-            // send back the error message 
+        .catch(err => {
             res.json("erreur " + err);
         })
 });

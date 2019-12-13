@@ -230,7 +230,6 @@ maitre.post("/login", (req, res) => {
 // });
 // update : BAN AND UN-BAN
 maitre.put("/banUnBanById", (req, res) => {
-   
   db.maitre
     .findOne({
       where: { idMaitre: req.body.idMaitre }
@@ -469,6 +468,37 @@ maitre.delete("/deleteBy/:email", (req,res) =>{
         else {
             // send back the error message to inform that you can't deleted this maitre because it does not exist in your database
             res.json({error : "impossible de supprimer ce maitre, il n'existe pas dans la base de données"})
+        }
+    })
+        .catch(err =>{
+            // send back the message error
+            res.json("erreur" + err);
+        })
+});
+
+
+// find by id maitre
+maitre.get("/getOneById/:id", (req,res) =>{
+    // find the employe by email
+    db.maitre.findOne({
+        attributes:{
+            exclude:["mdp", "telephone", "admin", "created_at", "updated_at","idLogement"]
+        },
+        where:{idMaitre: req.params.id},
+        include: [{
+            model: db.chat,
+        }]
+    }).then(maitre =>{
+        // if maitre exists :
+
+        if(maitre) {
+            res.json({
+                maitre: maitre
+            })
+        }
+        else {
+            // send back this nounou it does not exist in your database
+            res.json({error : "Ce maitre n'existe pas dans la liste"})
         }
     })
         .catch(err =>{

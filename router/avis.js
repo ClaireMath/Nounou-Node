@@ -37,10 +37,10 @@ const fn = Sequelize.fn
 /************************************** Start route module ****************************************************
  *****************************************************************************************************************/
 
-// Add new
-avis.post("/newAvis", (req, res) => {
+// Add new avis sur une nounou (c'est le maitre qui note)
+avis.post("/newAvisOnN", (req, res) => {
     const avisdata = {
-        type_de_personne_notee: req.body.type_de_personne_notee,
+        type_de_personne_notee: "nounou",
         note: req.body.note,
         commentaire: req.body.commentaire,
         idMaitre:req.body.id_maitre,

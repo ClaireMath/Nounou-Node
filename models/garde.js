@@ -35,7 +35,7 @@ module.exports = (dbinfo, Sequelize) => {
           type: Sequelize.DataTypes.BOOLEAN,
           // setting allowNull to false will add NOT NULL to the column, which means there will be an error if you don't add info in this column
           allowNull: false,
-          defaultValue: false
+          defaultValue: null
         }
       },
       {

@@ -111,6 +111,9 @@ avis.get("/AllAvisByNounou", (req,res) =>{
         where: { 
             [Op.and]: [{type_de_personne_notee: "nounou"} , {idNounou:req.body.id_nounou}]
             }, 
+            include: [{
+                model: db.maitre,
+            }],
             order: [["note", "desc"]],
         attributes:{
             exclude:["created_at", "updated_at"]

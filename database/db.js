@@ -89,17 +89,21 @@ db.garde = require('../models/garde')(dbinfo,Sequelize);
 
 db.maitre.hasOne(db.chat,{foreignKey: "idMaitre"});
 
-db.garde.hasOne(db.avis, { foreignKey: "idGarde" });
 
 db.chat.hasMany(db.garde, { foreignKey: "idChat" });
 db.nounou.hasMany(db.garde, { foreignKey: "idNounou" });
+// db.garde.hasOne(db.nounou, { foreignKey: "idNounou" })
+// db.garde.hasOne(db.chat, { foreignKey: "idChat" })
+// db.maitre.hasMany(db.garde, { foreignKey: "idMaitre" });
 
 db.nounou.hasOne(db.logement,{foreignKey: "idNounou"});
 
+db.garde.hasOne(db.avis, { foreignKey: "idGarde" });
 db.nounou.hasOne(db.avis,{foreignKey: "idNounou"});
 db.maitre.hasOne(db.avis,{foreignKey: "idMaitre"});
 db.avis.belongsTo(db.nounou,{foreignKey: "idNounou"});
 db.avis.belongsTo(db.maitre,{foreignKey: "idMaitre"});
+db.avis.belongsTo(db.garde,{foreignKey: "idGarde"});
 
 // db.nounou.hasOne(db.garde,{foreignKey: "idNounou"});
 // db.chat.hasOne(db.garde,{foreignKey: "idChat"});

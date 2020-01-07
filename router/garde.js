@@ -38,15 +38,15 @@ const Op = Sequelize.Op;
  *****************************************************************************************************************/
 
 // ************************************ NodeMailer *********************************************
-const nodemailer = require('nodemailer')
-const sendgridTransport = require('nodemailer-sendgrid-transport')
+const nodemailer = require("nodemailer");
+const sendgridTransport = require("nodemailer-sendgrid-transport");
 
 // ********************************************************************************
 
 // Nouvelle demande de garde d'un maitre qui cherche une nounou
 garde.post("/new", (req, res) => {
   console.log(req.body.id_chat);
-  
+
   for (let index = 0; index < req.body.id_chat.length; index++) {
     console.log(req.body.id_chat[index]);
     db.garde
@@ -70,24 +70,24 @@ garde.post("/new", (req, res) => {
 // Add new demande d'une nounou pour garder un chat
 garde.post("/newResquestForACat", (req, res) => {
   console.log(req.body);
- 
-    db.garde
-      .create({
-        debut: req.body.debut,
-        fin: req.body.fin,
-        message: req.body.message,
-        statut: 0,
-        idChat: req.body.id_chat,
-        idNounou: req.body.id_nounou
-      })
-      .then(garde => {
-        res.json({ garde: garde });
-      })
-      .catch(err => {
-        res.send("error " + err);
-      });
+
+  db.garde
+    .create({
+      debut: req.body.debut,
+      fin: req.body.fin,
+      message: req.body.message,
+      statut: 0,
+      idChat: req.body.id_chat,
+      idNounou: req.body.id_nounou
+    })
+    .then(garde => {
+      res.json({ garde: garde });
+    })
+    .catch(err => {
+      res.send("error " + err);
+    });
 });
- 
+
 // envoi du mail
 garde.post("/mail", (req, res) => {
   console.log(req.body.garde);
@@ -103,9 +103,9 @@ garde.post("/mail", (req, res) => {
     tls: {
       // do not fail on invalid certs
       rejectUnauthorized: false
-  },
-  }
-console.log(req.body);
+    }
+  };
+  console.log(req.body);
   // find one x2 ici de nounou et trouver le maitre via le chat
   const transporter = nodemailer.createTransport(mail);
   var message = {
@@ -113,10 +113,12 @@ console.log(req.body);
     subject: `Demande de garde pour ${req.body.maitre.maitre.chat.prenom_chat}`,
     to: `claira.m@live.fr`,
     text: `${req.body.message}`,
-    html: `<h1>Bonjour ${req.body.nounou.nounou.prenom},</h1> 
+    html:
+      `<h1>Bonjour ${req.body.nounou.nounou.prenom},</h1> 
           <p>${req.body.maitre.maitre.prenom} vous envoie une demande de garde pour son Chat ${req.body.maitre.maitre.chat.prenom_chat} du ${req.body.garde.garde.debut} au ${req.body.garde.garde.fin}</p>
           <p>Pour répondre à sa demande nous vous invitons à cliquer sur le lien suivant : 
-          <a href="http://localhost:8080/confirmationGardeN?idGarde=`+req.body.garde.garde.idGarde`">
+          <a href="http://localhost:8080/confirmationGardeN?idGarde=` +
+      req.body.garde.garde.idGarde`">
           Confirmer ou décliner la garde
           </a>puis à prendre contact avec lui sur son adresse email : ${req.body.maitre.maitre.email} si vous acceptez la garde.</p>
           <p>Chamicalement,</p>
@@ -126,29 +128,29 @@ console.log(req.body);
   transporter.sendMail(message, (error, mail) => {
     console.log(mail);
     if (error) {
-      res.json({error:error})
+      res.json({ error: error });
     } else {
-      res.json('message envoyé avec succès !')
+      res.json("message envoyé avec succès !");
     }
-  })
+  });
 });
 
-    // sendgridTransport({
-    //   auth: {
-    //     api_key: "-I0Pw9stTBK3ToHiciZqVg"
-    //   }
-    // });
+// sendgridTransport({
+//   auth: {
+//     api_key: "-I0Pw9stTBK3ToHiciZqVg"
+//   }
+// });
 
 // accept
 garde.put("/accept/:id", (req, res) => {
   db.garde
     .findOne({
-      where: {idGarde: req.params.id_garde}
+      where: { idGarde: req.params.id_garde }
     })
     .then(garde => {
       if (garde) {
         garde.update({
-          statut: '2'
+          statut: "2"
         });
         res.json("mise à jour de la garde par l'id effectuée avec succès");
       } else {
@@ -166,12 +168,12 @@ garde.put("/accept/:id", (req, res) => {
 garde.put("/decline/:id", (req, res) => {
   db.garde
     .findOne({
-      where: {idGarde: req.params.id_garde}
+      where: { idGarde: req.params.id_garde }
     })
     .then(garde => {
       if (garde) {
         garde.update({
-          statut: '1'
+          statut: "1"
         });
         res.json("mise à jour de la garde par l'id effectuée avec succès");
       } else {
@@ -185,79 +187,53 @@ garde.put("/decline/:id", (req, res) => {
     });
 });
 
-// get all gardes des chats d'un maitre
-// je me demande si ça simplifierait pas les choses si on avait l'id maitre 
-// dans garde en plus de l'idNounou et l'idChat...? 
-garde.get("/AllgardeChatsByMaitre", (req, res) => {
-  db.garde
-    .findAll({
-      where: {
-        [Op.and]: [
-          { type_de_personne_notee: "nounou" },
-          { idMaitre: req.body.id_maitre }
-        ]
-      },
-      order: [["note", "desc"]],
-      attributes: {
-        exclude: ["created_at", "updated_at"]
-      }
-    })
-    .then(gardes => {
-      res.json(gardes);
-    })
-    .catch(err => {
-      // send back the error message
-      res.json("erreur" + err);
-    });
+// get all gardes des chats d'un maitre via les idChats
+garde.post("/AllgardeChatsOfOneMaitre", (req, res) => {
+  console.log(req.body);
+  for (let index = 0; index < req.body.idChats.length; index++) {
+    console.log(req.body.idChats[index]);
+    // Ici on utilise MySql dans sequelize car il n'est pas possible de faire 2 includes avec sequelize
+    // alors qu'il est possible de faire 2 inner joins
+    db.dbinfo.query(
+        "SELECT * FROM gardes INNER JOIN chats ON chats.id_chat = gardes.id_chat INNER JOIN nounous ON nounous.id_nounou = gardes.id_nounou WHERE gardes.id_chat = :id AND gardes.statut = 2 ",
+        {
+          replacements: { id: req.body.idChats[index] },
+          type: db.dbinfo.QueryTypes.SELECT
+        }
+      )
+
+      .then(gardes => {
+        console.log(gardes);
+        res.json({ gardes });
+      })
+      .catch(err => {
+        res.send("error " + err);
+      });
+  }
 });
 
-// get all garde d'un maitre précis
-
-garde.get("/AllgardeByMaitre", (req, res) => {
-  db.garde
-    .findAll({
-      where: {
-        [Op.and]: [
-          { type_de_personne_notee: "maitre" },
-          { idMaitre: req.body.id_maitre }
-        ]
-      },
-      order: [["note", "desc"]],
-      attributes: {
-        exclude: ["created_at", "updated_at"]
-      }
-    })
-    .then(gardes => {
-      res.json(gardes);
-    })
-    .catch(err => {
-      // send back the error message
-      res.json("erreur" + err);
-    });
-});
-
-garde.get("/AllgardeByNounou", (req, res) => {
-  db.garde
-    .findAll({
-      where: {
-        [Op.and]: [
-          { type_de_personne_notee: "nounou" },
-          { idNounou: req.body.id_nounou }
-        ]
-      },
-      order: [["note", "desc"]],
-      attributes: {
-        exclude: ["created_at", "updated_at"]
-      }
-    })
-    .then(gardes => {
-      res.json(gardes);
-    })
-    .catch(err => {
-      // send back the error message
-      res.json("erreur" + err);
-    });
-});
+// garde.get("/AllgardeByNounou", (req, res) => {
+//   db.garde
+//     .findAll({
+//       where: {
+//         [Op.and]: [
+//           { type_de_personne_notee: "nounou" },
+//           { idNounou: req.body.id_nounou }
+//         ]
+//       },
+//       order: [["note", "desc"]],
+//       attributes: {
+//         exclude: ["created_at", "updated_at"]
+//       }
+//     })
+//     .then(gardes => {
+//       res.json(gardes);
+//     })
+//     .catch(err => {
+//       // send back the error message
+//       res.json("erreur" + err);
+//     });
+// });
 
 // // delete garde via id
 garde.delete("/delete", (req, res) => {
@@ -330,4 +306,4 @@ garde.delete("/delete", (req, res) => {
 module.exports = garde;
 
 /************************************** end router module ****************************************************
- *****************************************************************************************************************/
+ ****************************************************************************************************************/

@@ -24,6 +24,8 @@ const db ={};
 //  * @type {Sequelize} // pour dire quel type d'objet cela retourne => sequelize
 //  */
 // Création d'une nouvelle instance de sequelize
+  // const dbinfo = new Sequelize("nounou", "nounou_app", "hngIiKB8VeQmxNcK", {
+
 const dbinfo = new Sequelize("nounou", "root", "will74root2019", {
   host: "localhost",
   // le type de base de données mysql, mongodb, nosql...

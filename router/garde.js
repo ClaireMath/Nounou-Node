@@ -105,22 +105,21 @@ garde.post("/mail", (req, res) => {
       rejectUnauthorized: false
     }
   };
-  console.log(req.body);
+  
   // find one x2 ici de nounou et trouver le maitre via le chat
   const transporter = nodemailer.createTransport(mail);
   var message = {
     from: `Une Nounou pour mon Matou <${mail.auth.user}>`,
     subject: `Demande de garde pour ${req.body.maitre.maitre.chat.prenom_chat}`,
-    to: `claira.m@live.fr`,
+    to: `claira.m42@gmail.com`,
     text: `${req.body.message}`,
     html:
       `<h1>Bonjour ${req.body.nounou.nounou.prenom},</h1> 
-          <p>${req.body.maitre.maitre.prenom} vous envoie une demande de garde pour son Chat ${req.body.maitre.maitre.chat.prenom_chat} du ${req.body.garde.garde.debut} au ${req.body.garde.garde.fin}</p>
+          <p>${req.body.maitre.maitre.prenom} vous envoie une demande de garde pour son chat ${req.body.maitre.maitre.chat.prenom_chat} du ${req.body.garde.garde.debut} au ${req.body.garde.garde.fin}</p>
           <p>Pour répondre à sa demande nous vous invitons à cliquer sur le lien suivant : 
-          <a href="http://localhost:8080/confirmationGardeN?idGarde=` +
-      req.body.garde.garde.idGarde`">
+          <a href="http://localhost:8080/confirmationGardeN?idGarde=${req.body.garde.garde.idGarde}">
           Confirmer ou décliner la garde
-          </a>puis à prendre contact avec lui sur son adresse email : ${req.body.maitre.maitre.email} si vous acceptez la garde.</p>
+          </a>puis à prendre contact avec lui/elle sur son adresse email : ${req.body.maitre.maitre.email} si vous acceptez la garde.</p>
           <p>Chamicalement,</p>
           <p>Une Nounou pour mon Matou</p>          
           `
@@ -134,12 +133,6 @@ garde.post("/mail", (req, res) => {
     }
   });
 });
-
-// sendgridTransport({
-//   auth: {
-//     api_key: "-I0Pw9stTBK3ToHiciZqVg"
-//   }
-// });
 
 // accept
 garde.put("/accept/:id", (req, res) => {

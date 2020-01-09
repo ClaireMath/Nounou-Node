@@ -44,7 +44,8 @@ avis.post("/newAvisOnN", (req, res) => {
         note: req.body.note,
         commentaire: req.body.commentaire,
         idMaitre:req.body.id_maitre,
-        idNounou:req.body.id_nounou
+        idNounou:req.body.id_nounou,
+        idGarde: req.body.id_garde
     };    
         db.avis.create(avisdata)  
             .then(avis => {
@@ -106,10 +107,11 @@ avis.get("/AllAvisByMaitre", (req,res) =>{
         })
 });
 
-avis.get("/AllAvisByNounou", (req,res) =>{
+avis.get("/AllAvisByNounou/:id", (req,res) =>{
+    console.log(req.params);
     db.avis.findAll({
         where: { 
-            [Op.and]: [{type_de_personne_notee: "nounou"} , {idNounou:req.body.id_nounou}]
+            [Op.and]: [{type_de_personne_notee: "nounou"} , {idNounou:req.params.id}]
             }, 
             include: [{
                 model: db.maitre,

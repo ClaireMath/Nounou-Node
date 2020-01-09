@@ -111,7 +111,7 @@ garde.post("/mail", (req, res) => {
   var message = {
     from: `Une Nounou pour mon Matou <${mail.auth.user}>`,
     subject: `Demande de garde pour ${req.body.maitre.maitre.chat.prenom_chat}`,
-    to: `claira.m42@gmail.com`,
+    to: `claira.m@live.fr`,
     text: `${req.body.message}`,
     html:
       `<h1>Bonjour ${req.body.nounou.nounou.prenom},</h1> 
@@ -182,9 +182,9 @@ garde.put("/decline/:id", (req, res) => {
 
 // get all gardes des chats d'un maitre via les idChats
 garde.post("/AllgardeChatsOfOneMaitre", (req, res) => {
-  console.log(req.body);
+  // console.log(req.body);
   for (let index = 0; index < req.body.idChats.length; index++) {
-    console.log(req.body.idChats[index]);
+    // console.log(req.body.idChats[index]);
     // Ici on utilise MySql dans sequelize car il n'est pas possible de faire 2 includes avec sequelize
     // alors qu'il est possible de faire 2 inner joins
     db.dbinfo.query(

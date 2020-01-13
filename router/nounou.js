@@ -114,14 +114,11 @@ nounou.post("/login", (req, res) => {
                res.json({ token: token });
                // si les deux mdp ne correspondent pas, tu envoies une erreur
              } else {
-               res.send(
-                 "Connexion refusée, erreur dans l'email ou dans le mot de passe"
-               );
+                res.status(404).json({error: "Connexion refusée, erreur dans l'email ou dans le mot de passe"});   
              }
            } else {
              res.json({
-               banni: "Vous êtes banni, vous n'avez plus accès au site"
-             });
+               banni: "Vous êtes banni, vous n'avez plus accès au site"});
            }
         })
         // si tu n'as pas réussi à trouver l'employé, tu me renvoies l'erreur

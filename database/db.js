@@ -9,7 +9,7 @@
 const db ={};
 
 // conn to database
-/**
+//  *     paramètres de connexion à la base de données
 //  * new Sequelize({database},{username},{password},options{
 //  *     host:{hostname}, => maintenant local host, mais quand le site sera en ligne, le nom de domaine ou l'adresse IP.
 //  *     dialect:  one of 'mysql' | 'mariadb' | 'postgres' | 'mssql' , The dialect of the database you are connecting to. One of mysql, postgres, sqlite and mssql.

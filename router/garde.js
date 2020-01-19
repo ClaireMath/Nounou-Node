@@ -141,17 +141,17 @@ garde.post("/mail", (req, res) => {
 });
 
 // accept
-garde.put("/accept/:id", (req, res) => {
-  db.garde
-    .findOne({
-      where: { idGarde: req.params.id_garde }
+garde.put("/accept/:idGarde", (req, res) => {
+  db.garde.findOne({
+      where: { idGarde: req.params.idGarde }
     })
     .then(garde => {
       if (garde) {
         garde.update({
           statut: "2"
+          
         });
-        res.json("mise à jour de la garde par l'id effectuée avec succès");
+        res.json("mise à jour de la garde par l'id effectuée avec succès")
       } else {
         res.json({
           error: "can't update this garde, it does not exist"
@@ -164,10 +164,10 @@ garde.put("/accept/:id", (req, res) => {
 });
 
 // decline
-garde.put("/decline/:id", (req, res) => {
+garde.put("/decline/:idGarde", (req, res) => {
   db.garde
     .findOne({
-      where: { idGarde: req.params.id_garde }
+      where: { idGarde: req.params.idGarde }
     })
     .then(garde => {
       if (garde) {

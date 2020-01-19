@@ -103,13 +103,12 @@ logement.put("/update/:idNounou", (req, res) => {
                    idNounou:req.body.id_nounou   
                })
                res.json(
-                   "mise à jour via l'id Nounou effectuée avec succès"
-               )
+                   "mise à jour via l'id Nounou effectuée avec succès")
            }
            else {
                res.json({
                    error: "can't update this accomodation, the flat does not exist"
-               })
+               });
            }
         })
         .catch(err => {

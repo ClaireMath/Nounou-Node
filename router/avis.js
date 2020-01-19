@@ -108,7 +108,7 @@ avis.get("/AllAvisByMaitre", (req,res) =>{
 });
 
 avis.get("/AllAvisByNounou/:id", (req,res) =>{
-    console.log(req.params);
+    // console.log(req.params);
     db.avis.findAll({
         where: { 
             [Op.and]: [{type_de_personne_notee: "nounou"} , {idNounou:req.params.id}]

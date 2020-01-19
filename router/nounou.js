@@ -106,8 +106,8 @@ nounou.post("/login", (req, res) => {
              // si le mot de passe crypté correspond à celui récup par la requete
              // dans ce cas là tu me signes un token, un token contient toutes les infos de la nounou
              if (bcrypt.compareSync(req.body.mdp, user.mdp)) {
-               console.log("ok");
-               console.log(user);
+            //    console.log("ok");
+            //    console.log(user);
                let token = jwt.sign(user.dataValues, process.env.SECRET_KEY, {
                  expiresIn: 1440
                });
@@ -598,9 +598,7 @@ nounou.get("/AllByVilleEtStatut", (req,res) =>{
 
 // afficher toutes les nounous DISPONIBLES par ville, classée par leur capacité d'accueil décroissante
 nounou.post("/AllByVilleStatutCapaDaccueil", (req,res) =>{
-    console.log(req.body)
-    
-    console.log(req.body)
+    // console.log(req.body)
 
     if (req.body.statut_disponible == true) {
         req.body.statut_disponible = 1
@@ -638,7 +636,7 @@ nounou.post("/AllByVilleStatutCapaDaccueil", (req,res) =>{
             
     })
     .then(nounous =>{
-        console.log(nounous)
+        // console.log(nounous)
         res.json(nounous)
     })
         .catch(err => {

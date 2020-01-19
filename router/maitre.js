@@ -665,7 +665,7 @@ maitre.get("/displayAll", (req,res) =>{
 
 // ok afficher toutes les maitres DISPONIBLES par ville
 maitre.post("/AllByVilleEtStatut", (req,res) =>{
-    console.log(req.body);
+    // console.log(req.body);
     if (req.body.chat.tolere_les_chats == true) {
         req.body.chat.tolere_les_chats = 1;
     } else {

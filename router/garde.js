@@ -45,10 +45,10 @@ const nodemailer = require("nodemailer");
 
 // Nouvelle demande de garde d'un maitre qui cherche une nounou
 garde.post("/new", (req, res) => {
-  console.log(req.body.id_chat);
+  // console.log(req.body.id_chat);
 
   for (let index = 0; index < req.body.id_chat.length; index++) {
-    console.log(req.body.id_chat[index]);
+    // console.log(req.body.id_chat[index]);
     db.garde
       .create({
         debut: req.body.debut,
@@ -69,7 +69,7 @@ garde.post("/new", (req, res) => {
 
 // Add new demande d'une nounou pour garder un chat
 garde.post("/newResquestForACat", (req, res) => {
-  console.log(req.body);
+  // console.log(req.body);
 
   db.garde
     .create({
@@ -90,7 +90,7 @@ garde.post("/newResquestForACat", (req, res) => {
 
 // envoi du mail
 garde.post("/mail", (req, res) => {
-  console.log(req.body.garde);
+  // console.log(req.body.garde);
 
   const mail = {
     host: "smtp.gmail.com",
@@ -112,24 +112,30 @@ garde.post("/mail", (req, res) => {
     from: `Une Nounou pour mon Matou <${mail.auth.user}>`,
     subject: `Demande de garde pour ${req.body.maitre.maitre.chat.prenom_chat}`,
     to: `claira.m@live.fr`,
+    // to: `req.body.nounou.nounou.email`,
     text: `${req.body.message}`,
     html:
       `<h1>Bonjour ${req.body.nounou.nounou.prenom},</h1> 
           <p>${req.body.maitre.maitre.prenom} vous envoie une demande de garde pour son chat ${req.body.maitre.maitre.chat.prenom_chat} du ${req.body.garde.garde.debut} au ${req.body.garde.garde.fin}</p>
+          <p>Voici son message :</p>
+          <p>=${req.body.garde.garde.message}</p>
           <p>Pour répondre à sa demande nous vous invitons à cliquer sur le lien suivant : 
-          <a href="http://localhost:8080/confirmationGardeN?idGarde=${req.body.garde.garde.idGarde}">
+          <a href="http://clairemathiron.fr/confirmationGardeN?idGarde=${req.body.garde.garde.idGarde}">
           Confirmer ou décliner la garde
           </a>puis à prendre contact avec lui/elle sur son adresse email : ${req.body.maitre.maitre.email} si vous acceptez la garde.</p>
           <p>Chamicalement,</p>
           <p>Une Nounou pour mon Matou</p>          
           `
   };
+  //* <a href="http://localhost:8080/confirmationGardeN?idGarde=${req.body.garde.garde.idGarde}"></a> */}
+  
   transporter.sendMail(message, (error, mail) => {
-    console.log(mail);
+    // console.log(mail);
     if (error) {
       res.json({ error: error });
     } else {
       res.json("message envoyé avec succès !");
+      alert(res.json)
     }
   });
 });
@@ -182,9 +188,9 @@ garde.put("/decline/:id", (req, res) => {
 
 // get all gardes des chats d'un maitre via les idChats
 garde.post("/AllgardeChatsOfOneMaitre", (req, res) => {
-  // console.log(req.body);
+  console.log(req.body.idChats);
   for (let index = 0; index < req.body.idChats.length; index++) {
-    // console.log(req.body.idChats[index]);
+    console.log(`idchat ligne 193 ${req.body.idChats[index]}`);
     // Ici on utilise MySql dans sequelize car il n'est pas possible de faire 2 includes avec sequelize
     // alors qu'il est possible de faire 2 inner joins
     db.dbinfo.query(
@@ -196,7 +202,7 @@ garde.post("/AllgardeChatsOfOneMaitre", (req, res) => {
       )
 
       .then(gardes => {
-        console.log(gardes);
+         console.log(gardes);
         res.json({ gardes });
       })
       .catch(err => {

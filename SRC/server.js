@@ -79,15 +79,6 @@ app.use(bodyParser.json());
  //extended=false is a configuration option that tells the parser to use the classic encoding. When using it, values can be only strings or arrays.
  app.use(bodyParser.urlencoded({extended: false}));
 
-
-/* Notre code pour nodemailer */
-//  var transporter = nodemailer.createTransport(
-//    (service: "gmail"),
-//    (auth: {
-//      user: "sender@gmail.com",
-//      pass: "password"
-//    })
-//  );
  app.post("/email", function(req, res, next) {
  });
 // we will then prefix for our routes
@@ -108,7 +99,7 @@ app.use("/garde", garde);
 
 // we say our app to start to listen in the port and send back to us the msg with port info
 app.listen(port, function () {
-    console.log("server start on " + port)
+    console.log("server starts on " + port)
 });
 
 /******************************************************** End make server with all parmars  ****************************************************
